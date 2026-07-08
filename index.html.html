@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Product Catalogue Phase 0 · Paper.id</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f8f7;
+    --bg-muted: #f1f0ed;
+    --text: #1a1a18;
+    --text-secondary: #5c5c57;
+    --text-muted: #9c9b96;
+    --border: #e8e7e3;
+    --border-strong: #d4d3ce;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-text: #1d4ed8;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --green-text: #15803d;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --amber-text: #b45309;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --red-text: #b91c1c;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --purple-text: #6d28d9;
+    --nav-w: 240px;
+    --content-max: 780px;
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    background: var(--bg-subtle);
+    padding: 1.5rem 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 3rem 4rem 6rem;
+  }
+  .content { max-width: var(--content-max); margin: 0 auto; }
+
+  /* ── Sidebar nav ── */
+  .nav-brand {
+    padding: 0 1.25rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .nav-logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-text);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .nav-doc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.25rem 0.25rem;
+  }
+  .nav-link {
+    display: block;
+    padding: 0.35rem 1.25rem;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--bg-muted); }
+  .nav-link.active { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent-bg); }
+  .nav-link.sub { padding-left: 2rem; font-size: 12px; }
+  .nav-link .badge {
+    float: right;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--bg-muted);
+    color: var(--text-muted);
+  }
+  .nav-link.new .badge { background: var(--red-bg); color: var(--red-text); }
+
+  /* ── Header ── */
+  .doc-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  .phase-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .doc-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  .doc-subtitle { font-size: 17px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 13px; color: var(--text-secondary); }
+  .meta-item { display: flex; align-items: center; gap: 6px; }
+  .meta-label { color: var(--text-muted); }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  h2.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  p { margin-bottom: 1rem; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Callout / Bet ── */
+  .callout-bet {
+    background: var(--text);
+    color: #f5f5f4;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .callout-bet p { color: #d4d3ce; margin-bottom: 0.85rem; }
+  .callout-bet p:last-child { margin-bottom: 0; }
+  .callout-bet strong { color: #ffffff; }
+
+  /* ── Problem bullets ── */
+  .problem-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .problem-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .problem-list li strong { color: var(--text); display: block; font-size: 13.5px; margin-bottom: 2px; }
+  .problem-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── Personas ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .persona-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    background: var(--bg);
+  }
+  .persona-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .persona-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .persona-card p { font-size: 13px; color: var(--text-secondary); }
+
+  /* ── Flows ── */
+  .flow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .flow-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .flow-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flow-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.03em;
+  }
+  .flow-card h4 { font-size: 14px; font-weight: 600; }
+  .flow-card p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .flow-steps { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+  .flow-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .step-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-connector { flex: 1; }
+
+  /* ── Not building ── */
+  .not-building { display: flex; flex-direction: column; gap: 8px; }
+  .not-building-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .not-building-item .x { color: var(--text-muted); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+  .not-building-item strong { color: var(--text); }
+
+  /* ── North star ── */
+  .north-star {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .north-star .ns-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #0284c7; margin-bottom: 0.5rem; }
+  .north-star .ns-metric { font-size: 18px; font-weight: 600; color: #0c4a6e; line-height: 1.4; }
+  .north-star .ns-sub { font-size: 13px; color: #0369a1; margin-top: 0.75rem; }
+
+  /* ── Metrics ── */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: var(--bg);
+  }
+  .metric-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .metric-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .metric-phase {
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+  }
+
+  /* ── Release strategy ── */
+  .release-phases { display: flex; flex-direction: column; gap: 0; }
+  .release-phase {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    border-radius: 0;
+    margin-top: -1px;
+  }
+  .release-phase:first-child { border-radius: var(--radius) var(--radius) 0 0; margin-top: 0; }
+  .release-phase:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .release-phase-label {
+    padding: 1rem;
+    background: var(--bg-subtle);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .release-phase-num { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+  .release-phase-name { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .release-type-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .release-phase-content { padding: 1rem 1.25rem; }
+  .release-phase-content h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+  .release-phase-content ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .release-phase-content li { font-size: 12.5px; color: var(--text-secondary); padding-left: 12px; position: relative; }
+  .release-phase-content li::before { content: "·"; position: absolute; left: 0; color: var(--text-muted); }
+
+  /* ── Requirements ── */
+  .req-group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .req-group-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .ticket {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .ticket-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ticket-header:hover { background: var(--bg-muted); }
+  .ticket-id {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .ticket-title { font-size: 14.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .ticket-chevron {
+    color: var(--text-muted);
+    font-size: 16px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .ticket.open .ticket-chevron { transform: rotate(180deg); }
+  .new-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--red-bg);
+    color: var(--red-text);
+    border: 1px solid #fecaca;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .ticket-body {
+    display: none;
+    padding: 1.25rem;
+  }
+  .ticket.open .ticket-body { display: block; }
+
+  .user-story {
+    background: var(--accent-bg);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 13.5px;
+  }
+  .user-story strong { display: block; font-size: 11px; font-weight: 600; color: var(--accent-text); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .user-story p { color: #1e3a5f; margin: 0; line-height: 1.55; }
+
+  .ticket-meta { display: flex; gap: 1.5rem; margin-bottom: 1.25rem; font-size: 13px; }
+  .ticket-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .ticket-meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .ticket-meta-value { color: var(--text-secondary); }
+
+  .context-box {
+    background: var(--amber-bg);
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #78350f;
+    margin-bottom: 1.25rem;
+  }
+  .context-box strong { color: #92400e; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+
+  .ac-group { margin-bottom: 1rem; }
+  .ac-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .ac-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .ac-list li {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    line-height: 1.5;
+  }
+  .ac-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 10px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ac-list li strong { color: var(--text); }
+  .ac-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: var(--bg-muted);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+  .edge-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .edge-list li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    line-height: 1.5;
+  }
+  .edge-list li::before {
+    content: "⚠";
+    position: absolute;
+    left: 10px;
+    color: var(--amber);
+    font-size: 11px;
+  }
+  .edge-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #78350f;
+  }
+
+  .clickup-row {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .clickup-input {
+    flex: 1;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: inherit;
+  }
+  .clickup-input:focus { outline: none; border-color: var(--accent); }
+
+  /* ── Assets ── */
+  .assets-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .assets-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .assets-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .assets-table tr:last-child td { border-bottom: none; }
+  .status-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .status-existing { background: var(--green-bg); color: var(--green-text); }
+  .status-pending { background: var(--bg-muted); color: var(--text-muted); }
+
+  /* ── Out of scope ── */
+  .oos-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .oos-list li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .oos-list li::before { content: "→"; color: var(--text-muted); font-size: 13px; }
+  .scope-label {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--purple-bg);
+    color: var(--purple-text);
+  }
+
+  /* ── Scope change alert ── */
+  .scope-alert {
+    background: var(--red-bg);
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 2rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .scope-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .scope-alert h4 { font-size: 14px; font-weight: 600; color: var(--red-text); margin-bottom: 4px; }
+  .scope-alert p { font-size: 13px; color: #7f1d1d; margin: 0; }
+
+  /* ── Print / mobile ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 2rem 1.5rem 4rem; }
+    .persona-grid, .flow-grid, .metrics-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    .sidebar { display: none; }
+    .ticket-body { display: block !important; }
+    .ticket-chevron { display: none; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo">Paper.id · R&amp;G</div>
+      <div class="nav-doc">Product Catalogue<br>PRD — Phase 0</div>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <a href="#the-bet" class="nav-link">The bet</a>
+    <a href="#problem" class="nav-link">The problem</a>
+    <a href="#audience" class="nav-link">Who it's for</a>
+    <a href="#scope" class="nav-link">What we're building</a>
+    <a href="#north-star" class="nav-link">North star</a>
+    <a href="#metrics" class="nav-link">Key metrics</a>
+    <a href="#how-it-works" class="nav-link">How it works</a>
+    <a href="#release" class="nav-link">Release strategy</a>
+
+    <div class="nav-section-label">Requirements</div>
+    <a href="#merchant-flows" class="nav-link">Merchant flows</a>
+    <a href="#a1" class="nav-link sub">A-1 · Create catalogue <span class="badge">5 AC</span></a>
+    <a href="#a2" class="nav-link sub">A-2 · Create order <span class="badge">6 AC</span></a>
+    <a href="#a3" class="nav-link sub">A-3 · Send via WhatsApp <span class="badge">5 AC</span></a>
+    <a href="#a4" class="nav-link sub">A-4 · Confirm order</a>
+    <a href="#a5" class="nav-link sub">A-5 · Auto-recon <span class="badge">6 AC</span></a>
+
+    <a href="#customer-flows" class="nav-link">Customer flows</a>
+    <a href="#b1" class="nav-link sub">B-1 · Access storefront <span class="badge">4 AC</span></a>
+    <a href="#b2" class="nav-link sub">B-2 · Cart &amp; review <span class="badge">3 AC</span></a>
+    <a href="#b3" class="nav-link sub">B-3 · Submit order <span class="badge">5 AC</span></a>
+
+    <div class="nav-section-label">Reference</div>
+    <a href="#assets" class="nav-link">Assets</a>
+    <a href="#oos" class="nav-link">Out of scope</a>
+    <a href="#good-to-have" class="nav-link">Good to have</a>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="content">
+
+      <!-- Header -->
+      <div class="doc-header">
+        <div class="phase-chip"><span class="phase-dot"></span>Phase 0 · Feature Flag</div>
+        <h1 class="doc-title">Product Catalogue</h1>
+        <p class="doc-subtitle">A digital storefront for merchants. An order flow for customers. Payment on Paper.id's rails.</p>
+        <div class="meta-row">
+          <div class="meta-item"><span class="meta-label">Writer</span> Jane Radianti Sugianto</div>
+          <div class="meta-item"><span class="meta-label">Reviewers</span> Brian Ridwan, Rinaldi Limeo, Rishi Bhansali</div>
+          <div class="meta-item"><span class="meta-label">BU</span> RNG · Squad 2</div>
+          <div class="meta-item"><span class="meta-label">Created</span> June 2026</div>
+        </div>
+      </div>
+
+      <!-- The Bet -->
+      <div class="section" id="the-bet">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0fdf4;">🎯</div>
+          <h2 class="section-title">The bet</h2>
+        </div>
+        <div class="callout-bet">
+          <p>Paper.id currently enters a transaction after the order has already happened. A seller receives an order on WhatsApp, creates an invoice manually, and shares a bank account number. <strong>The payment goes off-platform. Paper.id never sees it.</strong></p>
+          <p>Product Catalogue moves Paper.id upstream — from the invoice step to the order step. The seller builds a catalogue once and publishes it to a unique storefront URL. Buyers browse and submit orders directly. The seller confirms. Paper.id auto-generates the invoice and fires the payment link. <strong>The order happens inside Paper.id, so the payment has nowhere to go except Paper.id's rails.</strong></p>
+          <p>This is the same move Square made with the card reader: give small businesses a free point-of-sale tool to own where the transaction starts. Once the sale happens on Square, the payment follows. We are doing the same thing one layer up.</p>
+        </div>
+      </div>
+
+      <!-- Problem -->
+      <div class="section" id="problem">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fef2f2;">🔍</div>
+          <h2 class="section-title">The problem</h2>
+        </div>
+        <ul class="problem-list">
+          <li><span class="problem-icon">💬</span><div><strong>No lightweight order capture tool</strong>Merchants have no simple way to share products and receive orders without requiring customers to create a Paper.id account.</div></li>
+          <li><span class="problem-icon">📄</span><div><strong>Manual order-to-invoice workflows</strong>Merchants manually create Sales Orders and Sales Invoices after every order — causing delays, errors, and reconciliation overhead.</div></li>
+          <li><span class="problem-icon">🛒</span><div><strong>No self-serve buying experience</strong>Customers rely entirely on offline communication (WhatsApp, phone) to browse products and place orders.</div></li>
+          <li><span class="problem-icon">💸</span><div><strong>Fragmented payment reconciliation</strong>Payments are not automatically linked to their originating Sales Order and Invoice — requiring manual matching.</div></li>
+          <li><span class="problem-icon">📉</span><div><strong>Missed retention opportunity</strong>Without an embedded order and payment flow, Paper.id misses becoming the primary operational system for merchants' sales cycles.</div></li>
+        </ul>
+      </div>
+
+      <!-- Audience -->
+      <div class="section" id="audience">
+        <div class="section-header">
+          <div class="section-icon" style="background:#eff6ff;">👥</div>
+          <h2 class="section-title">Who it's for</h2>
+        </div>
+        <div class="persona-grid">
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#eff6ff; color:#1d4ed8;">M</div>
+            <h4>Merchant (User / Admin)</h4>
+            <p>A Paper.id account holder who builds and manages the catalogue, creates orders on behalf of customers, reviews and confirms incoming orders, and oversees the full order-to-payment cycle.</p>
+            <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Target: mid-sized B2B sellers in F&amp;B, construction, textile, and health &amp; beauty with a stable, repeat customer base.</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#f0fdf4; color:#15803d;">C</div>
+            <h4>Customer</h4>
+            <p>The end buyer. No Paper.id account needed. Receives a catalogue link from the merchant via WhatsApp, browses, selects items, and submits an order with just their name and phone number.</p>
+            <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">They are not discovering the merchant on Paper.id — the merchant sent them the link.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scope -->
+      <div class="section" id="scope">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">⚡</div>
+          <h2 class="section-title">What we're building</h2>
+        </div>
+        <p style="margin-bottom:1.25rem;">Phase 0 delivers two order creation flows on top of a shared product catalogue. In both flows: <strong>the merchant confirms before any invoice or payment link is generated.</strong></p>
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#eff6ff; color:#1d4ed8;">Flow A</span>
+              <div>
+                <h4>Merchant-initiated order</h4>
+                <p>Built for repeat B2B — the order is already known</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">1</span><span>Merchant builds order from catalogue</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">2</span><span>Applies discount &amp; fees, confirms</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">3</span><span>Sends order link to customer via WhatsApp</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">4</span><span>Customer reviews &amp; confirms</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">5</span><span>Customer pays via auto-generated link</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span><strong>Auto SO → SI → PayIn, reconciled</strong></span></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#f0fdf4; color:#15803d;">Flow B</span>
+              <div>
+                <h4>Customer self-serve order</h4>
+                <p>Built for inbound — buyer browses on their own</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">1</span><span>Customer opens storefront URL (no login)</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">2</span><span>Browses, adds to cart, submits order</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">3</span><span>Merchant reviews &amp; confirms</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">4</span><span>Payment link auto-sent to customer</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">5</span><span>Customer pays</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#bbf7d0; color:#15803d;">✓</span><span><strong>Auto SO → SI → PayIn, reconciled</strong></span></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:2rem;">What we're not building</h3>
+        <div class="not-building">
+          <div class="not-building-item"><span class="x">✕</span><div><strong>A marketplace.</strong> Buyers cannot discover sellers on Paper.id. The catalogue is only reachable via a link the seller shares.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>Inventory management.</strong> Availability is a binary on/off toggle per product. No stock counters, no quantity tracking — the merchant manually toggles a product off when it is unavailable.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>Direct checkout.</strong> The seller confirms every order before the invoice fires. SMB commerce in Indonesia is negotiated.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>MOQ enforcement.</strong> Not in this phase. See Good to Have.</div></div>
+        </div>
+      </div>
+
+      <!-- North Star -->
+      <div class="section" id="north-star">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0f9ff;">⭐</div>
+          <h2 class="section-title">North star</h2>
+        </div>
+        <div class="north-star">
+          <div class="ns-label">Single success metric</div>
+          <div class="ns-metric">% of catalogue-originated orders that result in a completed payment<br>on Paper.id rails within 48 hours</div>
+          <div class="ns-sub">This tells us whether the catalogue is closing the order-to-payment gap — or just creating a digital menu.</div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="section" id="metrics">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">📈</div>
+          <h2 class="section-title">Key metrics</h2>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-name">Catalogue creation rate</div>
+            <div class="metric-desc">% of eligible merchants who publish at least one product</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Order submission rate</div>
+            <div class="metric-desc">% of catalogue views that result in a submitted order</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Merchant confirmation rate</div>
+            <div class="metric-desc">% of submitted orders confirmed by the merchant within 2 hours</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Payment completion rate</div>
+            <div class="metric-desc">% of confirmed orders that result in a completed payment</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Auto-recon success rate</div>
+            <div class="metric-desc">% of payments where SO, SI, and PayIn auto-create and link without manual intervention</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Merchant retention lift</div>
+            <div class="metric-desc">3-month retention delta between catalogue-using merchants vs. non-users</div>
+            <span class="metric-phase" style="background:var(--purple-bg);color:var(--purple-text);">Phase 0, 1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Release Strategy -->
+      <div class="section" id="release">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">🚀</div>
+          <h2 class="section-title">Release strategy</h2>
+        </div>
+        <div class="release-phases">
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">0</div>
+              <div class="release-phase-name">Phase 0</div>
+              <div class="release-type-chip" style="background:#eff6ff; color:#1d4ed8;">Feature flag</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Validate core catalogue and both order flows with selected merchants</h4>
+              <ul>
+                <li>≥ 60% of Phase 0 merchants create a catalogue and receive ≥ 1 confirmed order within 60 days</li>
+                <li>≥ 70% payment completion rate</li>
+                <li>Auto-recon success ≥ 95% of payments</li>
+                <li>&lt; 30% customer checkout abandonment</li>
+              </ul>
+            </div>
+          </div>
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">1</div>
+              <div class="release-phase-name">Phase 1</div>
+              <div class="release-type-chip" style="background:#f0fdf4; color:#15803d;">Canary</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Expand to broader merchant base with bulk discounts and MOQ</h4>
+              <ul>
+                <li>≥ 60% of ICP merchants maintain Phase 0 order conversion rate</li>
+                <li>Bulk discount / MOQ used by ≥ 30% of active merchants</li>
+                <li>Merchant retention improves vs. non-catalogue users</li>
+              </ul>
+            </div>
+          </div>
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">2</div>
+              <div class="release-phase-name">Phase 2</div>
+              <div class="release-type-chip" style="background:#f5f3ff; color:#6d28d9;">GA</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Full rollout with advanced features and reporting</h4>
+              <ul>
+                <li>≥ 30% of active merchants with a published catalogue</li>
+                <li>Catalogue-driven GMV measurably growing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requirements -->
+      <div class="section" id="merchant-flows">
+        <div class="req-group-header">
+          <span class="req-group-label">A. Merchant flows</span>
+          <span style="font-size:12px; color:var(--text-muted);">5 tickets · Each maps to one ClickUp ticket</span>
+        </div>
+
+        <!-- A-1 -->
+        <div class="ticket open" id="a1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-1</span>
+            <span class="ticket-title">Create and manage product catalogue</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id merchant, I want to create and manage a product catalogue inside Paper.id, so I can list my products with prices and make them available for ordering.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Dashboard → Product Catalogue (new left nav)</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Context</strong>
+              Today, merchants manage product lists outside Paper.id — WhatsApp messages, spreadsheets, printed price lists.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Access &amp; navigation</div>
+              <ul class="ac-list">
+                <li>Product Catalogue accessible from the left navigation menu</li>
+                <li>Empty state shows a clear CTA to add the first product</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Add product</div>
+              <ul class="ac-list">
+                <li>Fields: Product Name (required, max 100 chars), Description (optional, max 500 chars), Price (required, IDR, &gt; 0), Product Image (optional, JPG/PNG, max 5MB), SKU (optional), Unit (optional, e.g. pcs, box, kg)</li>
+                <li>Required fields validated on submission; inline error shown on failure</li>
+                <li>Product appears in the catalogue list immediately on save</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Edit &amp; delete product</div>
+              <ul class="ac-list">
+                <li>Merchant can edit any product field; changes reflect immediately across the catalogue and storefront</li>
+                <li>Delete triggers a confirmation modal before removal</li>
+                <li>Deleted products are removed from both the merchant list and the public storefront URL</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Storefront URL generation</div>
+              <ul class="ac-list">
+                <li>Unique storefront URL auto-generated when the first product is saved</li>
+                <li>URL is permanent per merchant account unless manually reset</li>
+                <li>Merchant can copy the URL from the Product Catalogue module</li>
+                <li>URL leads to the customer-facing catalogue page — no login required for buyers</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Price ≤ 0 → inline error: <code>"Price must be greater than 0"</code></li>
+                <li>Image upload failure → product saves without image; non-blocking warning shown</li>
+                <li>Catalogue must support ≥ 100 products without performance degradation</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-2 -->
+        <div class="ticket" id="a2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-2</span>
+            <span class="ticket-title">Create order on behalf of customer</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to select products from my catalogue and build an order for a specific customer, so I can capture the order quickly without the customer needing to browse the catalogue themselves.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Product Catalogue module → Create Order</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Product selection</div>
+              <ul class="ac-list">
+                <li>Merchant can browse, search (by name or SKU), and add products from their catalogue</li>
+                <li>Minimum quantity per line item: 1</li>
+                <li>Merchant can adjust quantities or remove items before confirming</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Cart review</div>
+              <ul class="ac-list">
+                <li>Cart shows: product name, SKU (if set), unit price, quantity, line total; subtotal; discount (if applied); custom fees (if added); grand total</li>
+                <li>Cart persists within the same session if the merchant navigates away</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Discount</div>
+              <ul class="ac-list">
+                <li>Merchant enters a discount as a free-form IDR amount or percentage — open input field, no structured discount types</li>
+                <li>Discount cannot exceed the subtotal → error: <code>"Discount cannot exceed order subtotal"</code></li>
+                <li>Discount shown as a separate line item in the cart summary</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Custom &amp; delivery fees</div>
+              <ul class="ac-list">
+                <li>Merchant can add one or more fee lines, each with a label (required) and IDR amount (required, &gt; 0)</li>
+                <li>Each fee appears as a separate line item; all fees included in grand total</li>
+                <li>Merchant can remove any fee line before confirming</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Order confirmation</div>
+              <ul class="ac-list">
+                <li>Before confirming, merchant enters: Customer Name (required), Customer WhatsApp Number (required, validated for WA format)</li>
+                <li>Final order summary shown before tapping "Confirm Order"</li>
+                <li>On confirm, a draft Sales Order is staged and linked to the merchant's account</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">6 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Empty cart on confirm → <code>"Please add at least one product to create an order"</code></li>
+                <li>Invalid WA number → <code>"Please enter a valid WhatsApp number"</code></li>
+                <li>Product price changes after being added to cart → cart updates to latest price with notice: <code>"Price for [Product Name] has been updated"</code></li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-3 -->
+        <div class="ticket" id="a3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-3</span>
+            <span class="ticket-title">Send order to customer via WhatsApp</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to send a confirmed order to my customer via WhatsApp, so they can review and pay without me typing out the order details manually.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Order confirmation screen → "Send via WhatsApp" or "Copy Link"</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Send via WhatsApp</div>
+              <ul class="ac-list">
+                <li>Opens <code>wa.me</code> with the customer's number pre-filled and a pre-composed message: merchant/business name, order summary (products, quantities, total), and the unique order link</li>
+                <li>Merchant can edit the message before sending</li>
+                <li>No WA Business API required for Phase 0</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Copy link</div>
+              <ul class="ac-list">
+                <li>"Copy Link" copies the unique order link to clipboard</li>
+                <li>Success toast: <code>"Order link copied to clipboard"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Order link behaviour</div>
+              <ul class="ac-list">
+                <li>Link is unique per order; directs the customer to an order summary with a "Confirm &amp; Pay" action</li>
+                <li>Link is valid until the order is paid or cancelled</li>
+                <li>Already paid: <code>"This order has already been completed. Thank you!"</code></li>
+                <li>Cancelled: <code>"This order is no longer available"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Resend</div>
+              <ul class="ac-list">
+                <li>Merchant can resend or re-copy the order link from the order detail page at any time</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>WhatsApp not detected on device → fall back to Copy Link with notice: <code>"WhatsApp not detected. Please copy the link and send manually"</code></li>
+                <li>Expired or invalid order link → customer sees an error page with support contact</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-4 -->
+        <div class="ticket" id="a4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-4</span>
+            <span class="ticket-title">Review and confirm incoming customer order</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to review orders submitted by customers via my public storefront, apply any adjustments, and confirm before the invoice fires — so I stay in control of pricing and terms.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">In-app notification → Order detail page</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Order notification</div>
+              <ul class="ac-list">
+                <li>Merchant receives an in-app notification when a customer submits a self-serve order</li>
+                <li>Notification shows: customer name, phone number, items ordered, and order total</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Order review</div>
+              <ul class="ac-list">
+                <li>Merchant can view the full order: line items, quantities, prices, customer notes</li>
+                <li>Merchant can apply a discount via a free-form IDR or % input field before confirming</li>
+                <li>Merchant can add custom or delivery fees before confirming</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Confirm order</div>
+              <ul class="ac-list">
+                <li>On confirm, Paper.id auto-generates the invoice and sends a payment link directly to the customer's phone number</li>
+                <li>Order status in the merchant dashboard updates to "Awaiting Payment"</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Reject / cancel order</div>
+              <ul class="ac-list">
+                <li>Merchant can reject an unconfirmed order</li>
+                <li>Customer's order link updates to: <code>"This order is no longer available"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>If the merchant does not confirm within [TBD] hours, a reminder notification is sent</li>
+                <li>If the merchant's account is suspended, the storefront shows: <code>"This catalogue is temporarily unavailable"</code> and new orders cannot be received</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-5 -->
+        <div class="ticket" id="a5">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-5</span>
+            <span class="ticket-title">Auto document creation &amp; auto-reconciliation</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want SO, SI, and PayIn to be automatically created and linked when my customer pays, so I never have to manually create documents or reconcile payments.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Triggered automatically on successful payment (Flow A &amp; B)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Trigger</div>
+              <ul class="ac-list">
+                <li>Fires when the customer successfully completes payment via the payment link</li>
+                <li>No merchant action required</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Document creation (within 30s of payment)</div>
+              <ul class="ac-list">
+                <li>Sales Order (SO): reflects items, quantities, prices, discount, fees</li>
+                <li>Sales Invoice (SI): generated from the SO with payment terms and due date</li>
+                <li>PayIn: records the payment received, linked to the SI</li>
+                <li>All three documents are interlinked: SO → SI → PayIn</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Auto-reconciliation</div>
+              <ul class="ac-list">
+                <li>PayIn automatically reconciled against SI — no manual matching required</li>
+                <li>SI status → "Paid" · SO status → "Completed / Fulfilled"</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Merchant dashboard</div>
+              <ul class="ac-list">
+                <li>SO, SI, and PayIn appear in the merchant dashboard immediately after payment</li>
+                <li>Each document links to the related documents</li>
+                <li>Order status in the Product Catalogue order list → "Paid"</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Payment notification</div>
+              <ul class="ac-list">
+                <li>In-app notification: <code>"Payment received for Order #[ID] — [Name] paid IDR [AMOUNT]"</code></li>
+                <li>Push/email notification per the merchant's notification preferences</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">6 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Document creation failure after payment → payment is still recorded; system retries up to 3 times; merchant alerted if all retries fail</li>
+                <li>Insufficient permissions to create SO/SI → system error shown; support team notified</li>
+                <li>Duplicate payment attempt → handled by payment gateway; only one PayIn created per order</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer flows -->
+      <div class="section" id="customer-flows">
+        <div class="req-group-header">
+          <span class="req-group-label">B. Customer flows</span>
+          <span style="font-size:12px; color:var(--text-muted);">3 tickets · Each maps to one ClickUp ticket</span>
+        </div>
+
+        <!-- B-1 -->
+        <div class="ticket" id="b1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-1</span>
+            <span class="ticket-title">Access storefront (no login required)</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer of a Paper.id merchant, I want to open the merchant's catalogue via a shared link without creating an account, so I can browse and order quickly.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Merchant's storefront URL (shared via WhatsApp or any channel)</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Context</strong>
+              Today, customers have no digital way to browse a merchant's products. All ordering happens via WhatsApp chat or phone, leading to miscommunication and delays.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Catalogue access</div>
+              <ul class="ac-list">
+                <li>Opens in any mobile or desktop browser — <strong>no login required to browse</strong>. Login is deferred to order submission to keep the top-of-funnel frictionless.</li>
+                <li>Displays merchant's business name, logo (if set), and product list</li>
+                <li>Mobile-responsive, optimised for WhatsApp-referred traffic (majority on mobile)</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Catalogue display</div>
+              <ul class="ac-list">
+                <li>Each product shows: image (or placeholder), name, description (if set), price (IDR with thousand separators), unit (if set)</li>
+                <li>Paginated or infinite scroll if &gt; 20 products</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · State handling</div>
+              <ul class="ac-list">
+                <li>No products: <code>"This catalogue is currently empty. Please contact the seller"</code></li>
+                <li>Invalid URL / inactive account: <code>"This catalogue is not available. Please contact the seller"</code></li>
+                <li>Suspended account: <code>"This catalogue is temporarily unavailable"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Performance</div>
+              <ul class="ac-list">
+                <li>Page loads within 3 seconds on standard 4G mobile</li>
+                <li>Images are lazy-loaded to avoid blocking initial page render</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-2 -->
+        <div class="ticket" id="b2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-2</span>
+            <span class="ticket-title">Add products to cart &amp; review order</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer, I want to add products to my cart and review my order before confirming, so I know I have the right items and quantities before sending it to the merchant.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Storefront page → Add to Cart → Cart review page</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Adding to cart</div>
+              <ul class="ac-list">
+                <li>Customer can add any product; minimum quantity 1, maximum 9,999 (or merchant-defined)</li>
+                <li>Cart badge updates in real time</li>
+                <li>Customer can adjust quantities or remove items directly from the cart</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Cart review</div>
+              <ul class="ac-list">
+                <li>Shows: product name, image (if available), unit price, quantity, line total; subtotal; any merchant-added fees (read-only); grand total</li>
+                <li>Prices are fixed and read-only — customer cannot modify prices</li>
+                <li>Empty cart: <code>"Your cart is empty. Go back to browse products"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Product price or availability changes while in cart → cart updates to latest; notice: <code>"[Product Name] has been updated. Please review your cart"</code></li>
+                <li>Product removed from catalogue while in cart → item flagged as "No longer available"; customer must remove flagged items before submitting</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-3 -->
+        <div class="ticket" id="b3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-3</span>
+            <span class="ticket-title">Submit order &amp; complete payment</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer, I want to submit my order to the merchant and pay once they confirm it, so I can complete my purchase without any back-and-forth.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Cart review → Confirm Order → Post-submission → Payment (after merchant confirms)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Order submission</div>
+              <ul class="ac-list">
+                <li>Customer enters: Name (required), Phone Number (required), Notes/Remarks (optional, max 300 chars)</li>
+                <li>No login or OTP required — phone number is collected as part of the order form, not as an authentication step</li>
+                <li>Customer sees the final order summary before submitting</li>
+                <li>On submit, order is sent to the merchant as a pending order notification</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Post-submission state</div>
+              <ul class="ac-list">
+                <li>Customer sees: <code>"Your order has been submitted. The merchant will review and confirm it shortly."</code></li>
+                <li>After submission, optionally prompt: <code>"Verify your number to track this order and see future orders."</code> — one tap, skippable. This is the only point where OTP is offered, and it is never required.</li>
+                <li>Phone number is stored against the order regardless of whether the customer verifies — enables order history in Phase 1 without re-collecting data</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Payment (after merchant confirms)</div>
+              <ul class="ac-list">
+                <li>Once the merchant confirms, Paper.id auto-sends a payment link to the customer's phone number</li>
+                <li>Customer pays via methods configured in the merchant's Paper.id account</li>
+                <li>Success: <code>"Payment successful! Your order has been confirmed"</code></li>
+                <li>Failure: <code>"Payment failed. Please try again or use a different payment method"</code> — customer can retry with the same link</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Payment link validity</div>
+              <ul class="ac-list">
+                <li>Valid for 24 hours by default (or per the merchant's configured due date)</li>
+                <li>Expired link: <code>"This payment link has expired. Please contact the merchant"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">6 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Browser closed before payment → order stays "Pending Payment"; customer can reopen via the order link</li>
+                <li>Duplicate payment attempt → <code>"This order has already been paid"</code></li>
+                <li>Payment gateway unavailable → <code>"Payment service is currently unavailable. Please try again in a few minutes"</code></li>
+                <li><strong>VA refund (edge case):</strong> If a customer completes a Virtual Account bank transfer and the order is subsequently cancelled, the refund cannot be processed programmatically — VA transfers are not reversible via the payment gateway. Resolution requires manual intervention by the Paper.id ops team. CC payments can be refunded directly to the card via the payment gateway with no manual step.</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assets -->
+      <div class="section" id="assets">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">📂</div>
+          <h2 class="section-title">Assets</h2>
+        </div>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.figma.com/design/qYPwoBvKpp4SweN5lyLEYl/" style="color:var(--accent-text); text-decoration:none;">PO Form (Figma)</a></td>
+              <td style="color:var(--text-secondary);">Existing PO Form reference for Phase 0 UI/UX</td>
+              <td><span class="status-chip status-existing">Existing</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-secondary);">Product Catalogue Hi-Fi — Merchant flow</td>
+              <td style="color:var(--text-secondary);">Hi-fi for catalogue management, order creation, and order review</td>
+              <td><span class="status-chip status-pending">Not started</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-secondary);">Product Catalogue Hi-Fi — Customer flow</td>
+              <td style="color:var(--text-secondary);">Hi-fi for storefront, cart, order submission, and payment</td>
+              <td><span class="status-chip status-pending">Not started</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Out of scope -->
+      <div class="section" id="oos">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">🔜</div>
+          <h2 class="section-title">Out of scope — Phase 1</h2>
+        </div>
+        <ul class="oos-list">
+          <li>Delivery address field — merchant-controlled toggle in catalogue settings; only shown on the order form if the merchant enables it <span class="scope-label">Phase 1</span></li>
+          <li>Advanced reporting and analytics dashboard <span class="scope-label">Phase 1</span></li>
+        </ul>
+
+      </div>
+
+      <!-- Good to have -->
+      <div class="section" id="good-to-have">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">💡</div>
+          <h2 class="section-title">Good to have — validate demand first</h2>
+        </div>
+        <p style="color:var(--text-secondary); margin-bottom:1.25rem;">These are directionally useful but add meaningful complexity. Do not commit them to a phase until Phase 0 data shows merchants actually need them.</p>
+        <ul class="oos-list">
+          <li style="flex-direction:column; align-items:flex-start; gap:4px;">
+            <div style="display:flex; align-items:center; gap:10px; width:100%;">
+              <span>Bulk order discounts and layered pricing per customer tier or industry</span>
+              <span class="scope-label" style="margin-left:auto; background:var(--bg-muted); color:var(--text-muted);">Validate first</span>
+            </div>
+            <span style="font-size:12px; color:var(--text-muted); padding-left:0;">Complicates the order confirmation flow and pricing model significantly. Worth adding only if data shows repeat B2B merchants are blocked without it.</span>
+          </li>
+          <li style="flex-direction:column; align-items:flex-start; gap:4px;">
+            <div style="display:flex; align-items:center; gap:10px; width:100%;">
+              <span>Minimum Order Quantity (MOQ) enforcement per product</span>
+              <span class="scope-label" style="margin-left:auto; background:var(--bg-muted); color:var(--text-muted);">Validate first</span>
+            </div>
+            <span style="font-size:12px; color:var(--text-muted); padding-left:0;">Adds friction to the customer cart experience. Only relevant for distributors with strict wholesale minimums — a small subset of Phase 0 merchants.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleTicket(header) {
+    const ticket = header.closest('.ticket');
+    ticket.classList.toggle('open');
+  }
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('[id]');
+
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= 120) current = section.id;
+    });
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').replace('#', '');
+      link.classList.toggle('active', href === current);
+    });
+  }
+
+  document.querySelector('.main').addEventListener('scroll', updateActiveNav);
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+</script>
+
+</body>
+</html>
