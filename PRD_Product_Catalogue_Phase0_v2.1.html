@@ -1,0 +1,2446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Product Catalogue Phase 0 · Paper.id</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f8f7;
+    --bg-muted: #f1f0ed;
+    --text: #1a1a18;
+    --text-secondary: #5c5c57;
+    --text-muted: #9c9b96;
+    --border: #e8e7e3;
+    --border-strong: #d4d3ce;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-text: #1d4ed8;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --green-text: #15803d;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --amber-text: #b45309;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --red-text: #b91c1c;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --purple-text: #6d28d9;
+    --nav-w: 240px;
+    --content-max: 780px;
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    background: var(--bg-subtle);
+    padding: 1.5rem 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 3rem 4rem 6rem;
+  }
+  .content { max-width: var(--content-max); margin: 0 auto; }
+
+  /* ── Sidebar nav ── */
+  .nav-brand {
+    padding: 0 1.25rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .nav-logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-text);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .nav-doc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.25rem 0.25rem;
+  }
+  .nav-link {
+    display: block;
+    padding: 0.35rem 1.25rem;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--bg-muted); }
+  .nav-link.active { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent-bg); }
+  .nav-link.sub { padding-left: 2rem; font-size: 12px; }
+  .nav-link .badge {
+    float: right;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--bg-muted);
+    color: var(--text-muted);
+  }
+  .nav-link.new .badge { background: var(--red-bg); color: var(--red-text); }
+
+  /* ── Header ── */
+  .doc-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  .phase-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .doc-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  .doc-subtitle { font-size: 17px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 13px; color: var(--text-secondary); }
+  .meta-item { display: flex; align-items: center; gap: 6px; }
+  .meta-label { color: var(--text-muted); }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  h2.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  p { margin-bottom: 1rem; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Callout / Bet ── */
+  .callout-bet {
+    background: var(--text);
+    color: #f5f5f4;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .callout-bet p { color: #d4d3ce; margin-bottom: 0.85rem; }
+  .callout-bet p:last-child { margin-bottom: 0; }
+  .callout-bet strong { color: #ffffff; }
+
+  /* ── Problem bullets ── */
+  .problem-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .problem-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .problem-list li strong { color: var(--text); display: block; font-size: 13.5px; margin-bottom: 2px; }
+  .problem-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── Personas ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .persona-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    background: var(--bg);
+  }
+  .persona-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .persona-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .persona-card p { font-size: 13px; color: var(--text-secondary); }
+
+  /* ── Flows ── */
+  .flow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .flow-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .flow-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flow-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.03em;
+  }
+  .flow-card h4 { font-size: 14px; font-weight: 600; }
+  .flow-card p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .flow-steps { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+  .flow-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .step-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-connector { flex: 1; }
+
+  /* ── Not building ── */
+  .not-building { display: flex; flex-direction: column; gap: 8px; }
+  .not-building-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .not-building-item .x { color: var(--text-muted); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+  .not-building-item strong { color: var(--text); }
+
+  /* ── North star ── */
+  .north-star {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .north-star .ns-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #0284c7; margin-bottom: 0.5rem; }
+  .north-star .ns-metric { font-size: 18px; font-weight: 600; color: #0c4a6e; line-height: 1.4; }
+  .north-star .ns-sub { font-size: 13px; color: #0369a1; margin-top: 0.75rem; }
+
+  /* ── Metrics ── */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: var(--bg);
+  }
+  .metric-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .metric-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .metric-phase {
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+  }
+
+  /* ── Release strategy ── */
+  .release-phases { display: flex; flex-direction: column; gap: 0; }
+  .release-phase {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    border-radius: 0;
+    margin-top: -1px;
+  }
+  .release-phase:first-child { border-radius: var(--radius) var(--radius) 0 0; margin-top: 0; }
+  .release-phase:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .release-phase-label {
+    padding: 1rem;
+    background: var(--bg-subtle);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .release-phase-num { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+  .release-phase-name { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .release-type-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .release-phase-content { padding: 1rem 1.25rem; }
+  .release-phase-content h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+  .release-phase-content ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .release-phase-content li { font-size: 12.5px; color: var(--text-secondary); padding-left: 12px; position: relative; }
+  .release-phase-content li::before { content: "·"; position: absolute; left: 0; color: var(--text-muted); }
+
+  /* ── Requirements ── */
+  .req-group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .req-group-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .ticket {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .ticket-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ticket-header:hover { background: var(--bg-muted); }
+  .ticket-id {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .ticket-title { font-size: 14.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .ticket-chevron {
+    color: var(--text-muted);
+    font-size: 16px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .ticket.open .ticket-chevron { transform: rotate(180deg); }
+  .new-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--red-bg);
+    color: var(--red-text);
+    border: 1px solid #fecaca;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .ticket-body {
+    display: none;
+    padding: 1.25rem;
+  }
+  .ticket.open .ticket-body { display: block; }
+
+  .user-story {
+    background: var(--accent-bg);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 13.5px;
+  }
+  .user-story strong { display: block; font-size: 11px; font-weight: 600; color: var(--accent-text); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .user-story p { color: #1e3a5f; margin: 0; line-height: 1.55; }
+
+  .ticket-meta { display: flex; gap: 1.5rem; margin-bottom: 1.25rem; font-size: 13px; }
+  .ticket-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .ticket-meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .ticket-meta-value { color: var(--text-secondary); }
+
+  .context-box {
+    background: var(--amber-bg);
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #78350f;
+    margin-bottom: 1.25rem;
+  }
+  .context-box strong { color: #92400e; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+
+  .ac-group { margin-bottom: 1rem; }
+  .ac-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .ac-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .ac-list li {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    line-height: 1.5;
+  }
+  .ac-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 10px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ac-list li strong { color: var(--text); }
+  .ac-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: var(--bg-muted);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+  .edge-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .edge-list li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    line-height: 1.5;
+  }
+  .edge-list li::before {
+    content: "⚠";
+    position: absolute;
+    left: 10px;
+    color: var(--amber);
+    font-size: 11px;
+  }
+  .edge-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #78350f;
+  }
+
+  .clickup-row {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .clickup-input {
+    flex: 1;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: inherit;
+  }
+  .clickup-input:focus { outline: none; border-color: var(--accent); }
+
+  /* ── Assets ── */
+  .assets-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .assets-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .assets-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .assets-table tr:last-child td { border-bottom: none; }
+  .status-ref-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .status-ref-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 860px; }
+  .status-ref-table th {
+    text-align: left;
+    padding: 9px 12px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .status-ref-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-secondary); line-height: 1.45; }
+  .status-ref-table tr:last-child td { border-bottom: none; }
+  .status-ref-table td:first-child { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .status-ref-table td strong { color: var(--text); }
+  .status-ref-table tr.sr-highlight td { background: #fffbeb; }
+  .status-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .status-existing { background: var(--green-bg); color: var(--green-text); }
+  .status-pending { background: var(--bg-muted); color: var(--text-muted); }
+  .status-draft { background: var(--accent-bg); color: var(--accent-text); }
+
+  /* ── Out of scope ── */
+  .oos-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .oos-list li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .oos-list li::before { content: "→"; color: var(--text-muted); font-size: 13px; }
+  .scope-label {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--purple-bg);
+    color: var(--purple-text);
+  }
+
+  /* ── Scope change alert ── */
+  .scope-alert {
+    background: var(--red-bg);
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 2rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .scope-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .scope-alert h4 { font-size: 14px; font-weight: 600; color: var(--red-text); margin-bottom: 4px; }
+  .scope-alert p { font-size: 13px; color: #7f1d1d; margin: 0; }
+
+  /* ── Payment flow ── */
+  .expiry-box {
+    background: var(--amber-bg); border: 1px solid #fde68a;
+    border-radius: var(--radius); padding: 0.875rem 1rem;
+    font-size: 13px; color: #78350f; margin-top: 1rem; line-height: 1.6;
+  }
+  .expiry-box strong { color: #92400e; }
+  .payment-step {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--text-secondary);
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+  }
+  .payment-step:last-child { border-bottom: none; }
+  .payment-step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .payment-path-body { padding: 0.875rem 1.25rem; }
+
+  /* ── Role cards ── */
+  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .role-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .role-card-header {
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+    background: var(--bg-subtle); display: flex; align-items: center; gap: 10px;
+  }
+  .role-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .role-title { font-size: 15px; font-weight: 600; }
+  .role-perms { padding: 0.75rem 1.25rem; display: flex; flex-direction: column; gap: 0; }
+  .role-perm {
+    font-size: 13px; color: var(--text-secondary);
+    padding: 8px 0 8px 22px; position: relative;
+    border-bottom: 1px solid var(--border); line-height: 1.5;
+  }
+  .role-perm:last-child { border-bottom: none; }
+  .role-perm::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-size: 12px; font-weight: 600; }
+  .role-perm.no::before { content: "—"; color: var(--text-muted); }
+  .role-perm strong { color: var(--text); }
+
+  /* ── Notification rows ── */
+  .notif-section { margin-bottom: 1.5rem; }
+  .notif-section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .notif-rows { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .notif-row { display: grid; grid-template-columns: 170px 1fr 120px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .notif-row:last-child { border-bottom: none; }
+  .notif-trigger { padding: 10px 14px; background: var(--bg-subtle); border-right: 1px solid var(--border); font-weight: 500; color: var(--text); font-size: 12.5px; line-height: 1.5; }
+  .notif-message { padding: 10px 14px; color: var(--text-secondary); line-height: 1.55; font-style: italic; }
+  .notif-channels { padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; justify-content: center; border-left: 1px solid var(--border); }
+  .channel-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+  .ch-inapp { background: var(--accent-bg); color: var(--accent-text); }
+  .ch-wa { background: var(--green-bg); color: var(--green-text); }
+
+  /* ── Tax examples ── */
+  .tax-example { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .tax-example h4 { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .tax-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); padding: 4px 0; }
+  .tax-line.subtotal { border-top: 1px dotted var(--border); padding-top: 8px; margin-top: 4px; }
+  .tax-line.tax-row { color: var(--amber-text); }
+  .tax-line.grand { border-top: 2px solid var(--border-strong); padding-top: 8px; margin-top: 4px; font-weight: 700; color: var(--text); font-size: 13.5px; }
+
+  /* ── Onboarding steps ── */
+  .ob-steps { display: flex; flex-direction: column; gap: 0; }
+  .ob-step { display: grid; grid-template-columns: 48px 1fr; gap: 0; padding: 1rem 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .ob-step:last-child { border-bottom: none; }
+  .ob-step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-bg); color: var(--accent-text); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .ob-step-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .ob-step-body p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+
+  /* ── Flow diagram ── */
+  .fc-legend { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .fc-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-secondary); font-weight: 500; }
+  .fc-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .fc-shared-wrap { display: flex; justify-content: center; }
+  .fc-shared { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; width: 100%; max-width: 500px; text-align: center; }
+  .fc-shared-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.875rem; }
+  .fc-gap { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .fc-gap-line { width: 2px; background: var(--border-strong); }
+  .fc-gap-arr { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--border-strong); }
+  .fc-h10 { height: 10px; } .fc-h14 { height: 14px; }
+  .fc-split { display: flex; justify-content: center; }
+  .fc-split-inner { width: 500px; position: relative; height: 40px; }
+  .fc-split-inner::before { content: ""; position: absolute; top: 0; left: calc(50% - 1px); width: 2px; height: 40px; background: var(--border-strong); }
+  .fc-split-l { position: absolute; top: 38px; right: 50%; width: 50%; height: 2px; background: var(--border-strong); }
+  .fc-split-r { position: absolute; top: 38px; left: 50%; width: 50%; height: 2px; background: var(--border-strong); }
+  .fc-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .fc-col { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .fc-col-head { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .fc-col-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
+  .fc-col-title { font-size: 14.5px; font-weight: 600; }
+  .fc-col-sub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .fc-col-body { padding: 1.25rem; display: flex; flex-direction: column; align-items: center; }
+  .fc-col-top { display: flex; flex-direction: column; align-items: center; padding: 12px 0 4px; }
+  .fc-col-top-line { width: 2px; height: 20px; background: var(--border-strong); }
+  .fc-col-top-arr { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid var(--border-strong); }
+  .fc-box { width: 100%; border: 1px solid; border-radius: 8px; padding: 9px 13px; }
+  .fc-box-actor { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px; opacity: 0.75; }
+  .fc-box-text { font-size: 12.5px; line-height: 1.55; }
+  .fc-box.fc-c { background: #f0fdf4; border-color: #86efac; color: #166534; }
+  .fc-box.fc-m { background: var(--accent-bg); border-color: #93c5fd; color: #1e40af; }
+  .fc-box.fc-s { background: var(--purple-bg); border-color: #c4b5fd; color: #5b21b6; }
+  .fc-box.fc-e { background: var(--red-bg); border-color: #fca5a5; color: #991b1b; }
+  .fc-box.fc-w { background: var(--amber-bg); border-color: #fcd34d; color: #92400e; }
+  .fc-decision { width: 100%; background: var(--bg-subtle); border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 9px 13px; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .fc-decision-icon { font-size: 14px; opacity: 0.5; }
+  .fc-branches { width: 100%; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+  .fc-branch { border-left: 2px solid var(--border-strong); padding-left: 12px; display: flex; flex-direction: column; gap: 5px; }
+  .fc-branch-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 8px; border-radius: 10px; width: fit-content; margin-bottom: 2px; }
+  .fc-tag-confirm { background: #dcfce7; color: #166534; }
+  .fc-tag-reject { background: var(--red-bg); color: #991b1b; }
+  .fc-tag-expire { background: var(--amber-bg); color: #92400e; }
+  .fc-tag-edge { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+  .fc-sub-branches { border-left: 2px dashed var(--border-strong); margin-left: 6px; padding-left: 10px; display: flex; flex-direction: column; gap: 5px; padding-top: 4px; padding-bottom: 4px; }
+  .fc-sub-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 7px; border-radius: 10px; width: fit-content; margin-bottom: 2px; }
+  .fc-sub-tag-pay { background: #dcfce7; color: #166534; }
+  .fc-sub-tag-fail { background: var(--amber-bg); color: #92400e; }
+  .fc-terminal { padding: 7px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-align: center; width: fit-content; margin: 0 auto; }
+  .fc-terminal.fc-ok { background: #166534; color: #fff; }
+  .fc-terminal.fc-cancelled { background: #374151; color: #f9fafb; }
+  .fc-note { font-size: 11.5px; color: var(--text-secondary); background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: 6px; padding: 7px 10px; margin-top: 4px; line-height: 1.5; }
+
+  /* ── Print / mobile ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 2rem 1.5rem 4rem; }
+    .persona-grid, .flow-grid, .metrics-grid, .role-grid { grid-template-columns: 1fr; }
+    .notif-row { grid-template-columns: 1fr; }
+    .notif-trigger { border-right: none; border-bottom: 1px solid var(--border); }
+    .notif-channels { border-left: none; flex-direction: row; }
+  }
+  @media print {
+    .sidebar { display: none; }
+    .ticket-body { display: block !important; }
+    .ticket-chevron { display: none; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo">Paper.id · R&amp;G</div>
+      <div class="nav-doc">Product Catalogue<br>PRD — Phase 0</div>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <a href="#the-bet" class="nav-link">The bet</a>
+    <a href="#problem" class="nav-link">The problem</a>
+    <a href="#about-module" class="nav-link">About this module</a>
+    <a href="#audience" class="nav-link">Who it's for</a>
+    <a href="#scope" class="nav-link">What we're building</a>
+    <a href="#north-star" class="nav-link">North star</a>
+    <a href="#metrics" class="nav-link">Key metrics</a>
+    <a href="#payment-flow" class="nav-link">Payment flow</a>
+    <a href="#access" class="nav-link">User access &amp; roles</a>
+    <a href="#release" class="nav-link">Release strategy</a>
+
+    <div class="nav-section-label">Requirements</div>
+    <a href="#merchant-flows" class="nav-link">Merchant flows</a>
+    <a href="#a1" class="nav-link sub">A-1 · Create catalogue <span class="badge">5 AC</span></a>
+    <a href="#a2" class="nav-link sub">A-2 · Create order <span class="badge">6 AC</span></a>
+    <a href="#a3" class="nav-link sub">A-3 · Send via WhatsApp <span class="badge">5 AC</span></a>
+    <a href="#a4" class="nav-link sub">A-4 · Confirm order</a>
+    <a href="#a5" class="nav-link sub">A-5 · Auto-recon <span class="badge">6 AC</span></a>
+    <a href="#a6" class="nav-link sub new">A-6 · Order dashboard <span class="badge new">New</span></a>
+    <a href="#a7" class="nav-link sub new">A-7 · Notifications <span class="badge new">New</span></a>
+    <a href="#a8" class="nav-link sub new">A-8 · Invoice &amp; tax <span class="badge new">New</span></a>
+    <a href="#a9" class="nav-link sub new">A-9 · Onboarding <span class="badge new">New</span></a>
+    <a href="#a10" class="nav-link sub new">A-10 · Custom fields <span class="badge new">New</span></a>
+
+    <a href="#customer-flows" class="nav-link">Customer flows</a>
+    <a href="#b1" class="nav-link sub">B-1 · Access storefront <span class="badge">4 AC</span></a>
+    <a href="#b2" class="nav-link sub">B-2 · Select products &amp; info <span class="badge">4 AC</span></a>
+    <a href="#b4" class="nav-link sub">B-4 · OTP verification <span class="badge">3 AC</span></a>
+    <a href="#b3" class="nav-link sub">B-3 · Pay &amp; receipt <span class="badge">5 AC</span></a>
+
+    <div class="nav-section-label">Reference</div>
+    <a href="#status-reference" class="nav-link">Order &amp; payment status</a>
+    <a href="#assets" class="nav-link">Assets</a>
+    <a href="#oos" class="nav-link">Out of scope</a>
+    <a href="#good-to-have" class="nav-link">Good to have</a>
+
+    <div class="nav-section-label">Diagrams</div>
+    <a href="#flow-diagram" class="nav-link">Order &amp; payment flow</a>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="content">
+
+      <!-- Header -->
+      <div class="doc-header">
+        <div class="phase-chip"><span class="phase-dot"></span>Phase 0 · Feature Flag</div>
+        <h1 class="doc-title">Product Catalogue</h1>
+        <p class="doc-subtitle">A digital storefront for merchants. An order flow for customers. Payment on Paper.id's rails.</p>
+        <div class="meta-row">
+          <div class="meta-item"><span class="meta-label">Writer</span> Jane Radianti Sugianto</div>
+          <div class="meta-item"><span class="meta-label">Reviewers</span> Brian Ridwan, Rinaldi Limeo, Rishi Bhansali</div>
+          <div class="meta-item"><span class="meta-label">BU</span> RNG · Squad 2</div>
+          <div class="meta-item"><span class="meta-label">Created</span> June 2026</div>
+        </div>
+      </div>
+
+      <!-- The Bet -->
+      <div class="section" id="the-bet">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0fdf4;">🎯</div>
+          <h2 class="section-title">The bet</h2>
+        </div>
+        <div class="callout-bet">
+          <p>Paper.id currently enters a transaction after the order has already happened. A seller receives an order on WhatsApp, creates an invoice manually, and shares a bank account number. <strong>The payment goes off-platform. Paper.id never sees it.</strong></p>
+          <p>Product Catalogue moves Paper.id upstream — from the invoice step to the order step. The seller builds a catalogue once and publishes it to a unique storefront URL. Buyers browse and submit orders directly. The seller confirms. Paper.id auto-generates the invoice and fires the payment link. <strong>The order happens inside Paper.id, so the payment has nowhere to go except Paper.id's rails.</strong></p>
+          <p>This is the same move Square made with the card reader: give small businesses a free point-of-sale tool to own where the transaction starts. Once the sale happens on Square, the payment follows. We are doing the same thing one layer up.</p>
+          <p>This gap is especially pronounced for B2C sellers, who still handle sales the old way outside the platform — orders taken on WhatsApp, manually noted, with no structured way to capture or track them. Paper.id's B2B capability, Sales Invoice, doesn't fit this segment, and PO Form and Compact Invoice aren't yet seamless for it either: we already see users who use Payout but can't use PayIn simply because their business model doesn't match our B2B-oriented flow.</p>
+          <p>Product Catalogue closes this gap, bringing B2C merchants onto the platform for collection, not just disbursement — via two patterns: <strong>self-serve catalogue ordering</strong> (customer browses and picks, like a WhatsApp catalogue) and <strong>admin-assisted ordering</strong> (merchant inputs the order, customer just pays, like Compact Invoice).</p>
+        </div>
+      </div>
+
+      <!-- Problem -->
+      <div class="section" id="problem">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fef2f2;">🔍</div>
+          <h2 class="section-title">The problem</h2>
+        </div>
+        <ul class="problem-list">
+          <li><span class="problem-icon">💬</span><div><strong>No lightweight order capture tool</strong>Merchants have no simple way to share products and receive orders without requiring customers to create a Paper.id account.</div></li>
+          <li><span class="problem-icon">📄</span><div><strong>Manual order-to-invoice workflows</strong>Merchants manually create Sales Orders and Sales Invoices after every order — causing delays, errors, and reconciliation overhead.</div></li>
+          <li><span class="problem-icon">🛒</span><div><strong>No self-serve buying experience</strong>Customers rely entirely on offline communication (WhatsApp, phone) to browse products and place orders.</div></li>
+          <li><span class="problem-icon">💸</span><div><strong>Fragmented payment reconciliation</strong>Payments are not automatically linked to their originating Sales Order and Invoice — requiring manual matching.</div></li>
+          <li><span class="problem-icon">📉</span><div><strong>Missed retention opportunity</strong>Without an embedded order and payment flow, Paper.id misses becoming the primary operational system for merchants' sales cycles.</div></li>
+        </ul>
+      </div>
+
+      <!-- About this module -->
+      <div class="section" id="about-module">
+        <div class="section-header">
+          <div class="section-icon" style="background:#eff6ff;">📦</div>
+          <h2 class="section-title">About this module</h2>
+        </div>
+        <p>Product Catalogue is focused on mid-sized B2C sellers. It's built by dividing and enhancing capabilities we already have across two existing modules — <strong>PO Form</strong> and <strong>Compact Invoice</strong> — bringing them together into one cohesive catalogue-to-order experience rather than two disconnected pieces, both from the customer and merchant side in Paper.id.</p>
+      </div>
+
+      <!-- Audience -->
+      <div class="section" id="audience">
+        <div class="section-header">
+          <div class="section-icon" style="background:#eff6ff;">👥</div>
+          <h2 class="section-title">Who it's for</h2>
+        </div>
+        <div class="persona-grid">
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#f0fdf4; color:#15803d;">C</div>
+            <h4>Customer <span class="phase-chip" style="margin-left:6px; padding:2px 8px; font-size:10px;">This quarter focus</span></h4>
+            <p>The end buyer. No Paper.id account needed. Receives a catalogue link from the merchant via WhatsApp, browses, selects items, and submits an order with just their name and phone number.</p>
+            <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">They are not discovering the merchant on Paper.id — the merchant sent them the link.</p>
+          </div>
+          <div class="persona-card">
+            <div class="persona-avatar" style="background:#eff6ff; color:#1d4ed8;">M</div>
+            <h4>Merchant (User / Admin)</h4>
+            <p>A Paper.id account holder who builds and manages the catalogue, creates orders on behalf of customers, reviews and confirms incoming orders, and oversees the full order-to-payment cycle.</p>
+            <p style="margin-top:8px; font-size:12px; color:var(--text-muted);">Target: mid-sized B2C sellers in F&amp;B, construction, textile, and health &amp; beauty with a stable, repeat customer base.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scope -->
+      <div class="section" id="scope">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">⚡</div>
+          <h2 class="section-title">What we're building</h2>
+        </div>
+        <p style="margin-bottom:1.25rem;">Phase 0 delivers two order creation flows on top of a shared product catalogue. In both flows: <strong>payment is captured as soon as the customer pays — there is no merchant gate before checkout.</strong> The Sales Invoice (SI) and PayIn are created automatically the moment payment lands. The merchant then has <strong>30 minutes from payment</strong> to confirm or cancel the order; there is no auto-confirm — if the window closes with no action, the system auto-cancels and refunds in full. See <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a> for the complete breakdown.</p>
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#f0fdf4; color:#15803d;">Flow B</span>
+              <div>
+                <h4>Customer self-serve order <span class="phase-chip" style="margin-left:4px; padding:2px 8px; font-size:10px;">This quarter focus</span></h4>
+                <p>Built for inbound B2C — buyer browses on their own</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">1</span><span>Customer opens storefront URL (no login)</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">2</span><span>Browses, adds to cart, enters name/phone, verifies via OTP</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">3</span><span>Chooses payment method (CC or VA) and pays</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#bbf7d0; color:#15803d;">✓</span><span><strong>Auto SI → PayIn, reconciled</strong> the moment payment lands</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#f0fdf4; color:#15803d;">4</span><span>Merchant confirms or cancels within 30 minutes — no auto-confirm</span></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#eff6ff; color:#1d4ed8;">Flow A</span>
+              <div>
+                <h4>Merchant-initiated order</h4>
+                <p>Admin-assisted, similar to Compact Invoice — the order is already known</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">1</span><span>Merchant builds order from catalogue, adds custom fields (discount/fees — see A-10)</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">2</span><span>Sends a unique order link to customer via WhatsApp</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">3</span><span>Customer opens link, reviews, chooses payment method, and pays</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span><strong>Auto SI → PayIn, reconciled</strong> the moment payment lands</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#eff6ff; color:#1d4ed8;">4</span><span>Merchant confirms or cancels within 30 minutes — no auto-confirm</span></div>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:1rem; font-size:13px; color:var(--text-secondary);">Both flows converge on the same outcome: auto SI → PayIn, fully reconciled at the moment of payment, with no manual matching. No Sales Order document is created in Phase 0.</p>
+
+        <h3 style="margin-top:2rem;">What we're not building</h3>
+        <div class="not-building">
+          <div class="not-building-item"><span class="x">✕</span><div><strong>A marketplace.</strong> Buyers cannot discover sellers on Paper.id. The catalogue is only reachable via a link the seller shares.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>Inventory management.</strong> Availability is a binary on/off toggle per product. No stock counters, no quantity tracking — the merchant manually toggles a product off when it is unavailable.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>Full delivery-address capture.</strong> Phase 0 collects name, phone, and order notes only. Shipping address is planned for Phase 1 — see A-1 and B-3.</div></div>
+          <div class="not-building-item"><span class="x">✕</span><div><strong>MOQ enforcement.</strong> Not in this phase. See Good to Have.</div></div>
+        </div>
+      </div>
+
+      <!-- Payment Flow -->
+      <div class="section" id="payment-flow">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0f9ff;">💳</div>
+          <h2 class="section-title">Payment flow</h2>
+        </div>
+        <p style="margin-bottom:1.25rem;">Payment is captured <strong>immediately when the customer pays</strong> — there is no merchant gate before checkout. The SI and PayIn are created automatically the moment payment lands. The merchant then has <strong>30 minutes from payment</strong> to confirm or cancel the order; there is no auto-confirm, and if the window closes unconfirmed, the system auto-cancels and refunds in full. A merchant can still decline an order before the customer has paid, if needed — nothing has been charged yet, so there's nothing to refund. See <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a> for every event in the lifecycle.</p>
+        <div class="flow-grid">
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#eff6ff; color:#1d4ed8;">Credit Card</span>
+              <div>
+                <h4>Charged on payment</h4>
+                <p>Captured immediately — no hold-and-capture-on-confirm</p>
+              </div>
+            </div>
+            <div class="payment-path-body">
+              <div class="payment-step"><span class="payment-step-num" style="background:#eff6ff; color:#1d4ed8;">1</span><span>Customer enters CC details and pays → charge captured immediately, Payment Status → "Paid"</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#eff6ff; color:#1d4ed8;">2</span><span>Merchant confirms within 30 minutes of payment → Order Status → "Confirmed"</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#fef2f2; color:#b91c1c;">✕</span><span>Merchant cancels while still within the settlement SLA (funds not yet in Active Balance) → auto-refunded via the gateway, SI &amp; PayIn deleted</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#fffbeb; color:#b45309;">!</span><span>Merchant cancels after the charge has already settled into Active Balance → same as VA below: stays "Paid" until a manual refund</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#fef2f2; color:#b91c1c;">✕</span><span>30-minute window expires unconfirmed → auto-cancelled, refunded in full, SI &amp; PayIn deleted</span></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#f0fdf4; color:#15803d;">Virtual Account</span>
+              <div>
+                <h4>Instant to the balance</h4>
+                <p>VA number generated immediately — no wait for merchant confirmation</p>
+              </div>
+            </div>
+            <div class="payment-path-body">
+              <div class="payment-step"><span class="payment-step-num" style="background:#f0fdf4; color:#15803d;">1</span><span>Customer selects VA → number generated right away, no expiry while awaiting transfer</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#f0fdf4; color:#15803d;">2</span><span>Customer transfers → payment confirmed instantly, Payment Status → "Paid"</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#f0fdf4; color:#15803d;">3</span><span>Merchant confirms within 30 minutes of payment → Order Status → "Confirmed"</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#fffbeb; color:#b45309;">!</span><span>Merchant cancels after payment → <strong>manual refund</strong> via Paper.id ops. VA transfers are not programmatically reversible, so it stays "Paid" until refunded and marked so.</span></div>
+              <div class="payment-step"><span class="payment-step-num" style="background:#fef2f2; color:#b91c1c;">✕</span><span>30-minute window expires unconfirmed → auto-cancelled, refunded in full, SI &amp; PayIn deleted (same outcome as CC)</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="expiry-box">
+          <strong>The 30-minute window only starts once payment is received</strong> — not at order submission, and choosing a payment method has no expiry of its own. There is no auto-confirm: the merchant must actively confirm or cancel. If the window closes with no action, the system auto-cancels and refunds the customer in full, and both parties are notified via WhatsApp.
+        </div>
+      </div>
+
+      <!-- User Access -->
+      <div class="section" id="access">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">🔐</div>
+          <h2 class="section-title">User access &amp; roles</h2>
+        </div>
+        <p style="margin-bottom:1.25rem;">Two roles in Phase 0. Role-level discount limits (e.g. staff cannot discount more than X%) are Phase 1.</p>
+        <div class="role-grid">
+          <div class="role-card">
+            <div class="role-card-header">
+              <span class="role-badge" style="background:#eff6ff; color:#1d4ed8;">Owner</span>
+              <span class="role-title">Full access</span>
+            </div>
+            <div class="role-perms">
+              <div class="role-perm"><strong>Catalogue management</strong> — create, edit, delete products; set pricing, tax classification, and availability</div>
+              <div class="role-perm"><strong>Store settings</strong> — configure slug, store name, logo, and description</div>
+              <div class="role-perm"><strong>Order management</strong> — confirm, cancel, apply custom fields (discounts, fees — see A-10) on all orders</div>
+              <div class="role-perm"><strong>Reporting</strong> — full order history and dashboard metrics</div>
+              <div class="role-perm"><strong>Team management</strong> — invite and remove staff members</div>
+            </div>
+          </div>
+          <div class="role-card">
+            <div class="role-card-header">
+              <span class="role-badge" style="background:#f0fdf4; color:#15803d;">Staff</span>
+              <span class="role-title">Order management + availability</span>
+            </div>
+            <div class="role-perms">
+              <div class="role-perm no"><strong>Catalogue management</strong> — read-only on products and pricing. Cannot create, edit, or delete products or change prices</div>
+              <div class="role-perm"><strong>Availability toggle</strong> — can enable or disable individual products. This is the only catalogue action staff can take</div>
+              <div class="role-perm no"><strong>Store settings</strong> — no access. Cannot edit slug, name, or logo</div>
+              <div class="role-perm"><strong>Order management</strong> — confirm, cancel, apply custom fields (discounts, fees — see A-10) on all orders</div>
+              <div class="role-perm"><strong>Reporting</strong> — view order history and basic metrics</div>
+              <div class="role-perm no"><strong>Team management</strong> — no access. Cannot invite or remove members</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- North Star -->
+      <div class="section" id="north-star">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0f9ff;">⭐</div>
+          <h2 class="section-title">North star</h2>
+        </div>
+        <div class="north-star">
+          <div class="ns-label">Single success metric</div>
+          <div class="ns-metric">% of catalogue-originated orders that result in a completed payment<br>on Paper.id rails within 48 hours</div>
+          <div class="ns-sub">This tells us whether the catalogue is closing the order-to-payment gap — or just creating a digital menu.</div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="section" id="metrics">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">📈</div>
+          <h2 class="section-title">Key metrics</h2>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-name">Catalogue creation rate</div>
+            <div class="metric-desc">% of eligible merchants who publish at least one product</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Order submission rate</div>
+            <div class="metric-desc">% of catalogue views that result in a submitted order</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Payment completion rate</div>
+            <div class="metric-desc">% of submitted orders that result in a completed payment — payment happens immediately at checkout, before merchant confirmation</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Merchant confirmation rate</div>
+            <div class="metric-desc">% of paid orders confirmed by the merchant within 30 minutes of payment (no auto-confirm — unconfirmed orders auto-cancel and refund)</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Auto-recon success rate</div>
+            <div class="metric-desc">% of payments where SI and PayIn auto-create and link without manual intervention</div>
+            <span class="metric-phase">Phase 0</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Merchant retention lift</div>
+            <div class="metric-desc">3-month retention delta between catalogue-using merchants vs. non-users</div>
+            <span class="metric-phase" style="background:var(--purple-bg);color:var(--purple-text);">Phase 0, 1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Release Strategy -->
+      <div class="section" id="release">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">🚀</div>
+          <h2 class="section-title">Release strategy</h2>
+        </div>
+        <div class="release-phases">
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">0</div>
+              <div class="release-phase-name">Phase 0</div>
+              <div class="release-type-chip" style="background:#eff6ff; color:#1d4ed8;">Feature flag</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Validate core catalogue and both order flows with selected merchants</h4>
+              <ul>
+                <li>≥ 60% of Phase 0 merchants create a catalogue and receive ≥ 1 confirmed order within 60 days</li>
+                <li>≥ 70% payment completion rate</li>
+                <li>Auto-recon success ≥ 95% of payments</li>
+                <li>&lt; 30% customer checkout abandonment</li>
+              </ul>
+            </div>
+          </div>
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">1</div>
+              <div class="release-phase-name">Phase 1</div>
+              <div class="release-type-chip" style="background:#f0fdf4; color:#15803d;">Canary</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Expand to broader merchant base with bulk discounts and MOQ</h4>
+              <ul>
+                <li>≥ 60% of ICP merchants maintain Phase 0 order conversion rate</li>
+                <li>Bulk discount / MOQ used by ≥ 30% of active merchants</li>
+                <li>Merchant retention improves vs. non-catalogue users</li>
+              </ul>
+            </div>
+          </div>
+          <div class="release-phase">
+            <div class="release-phase-label">
+              <div class="release-phase-num">2</div>
+              <div class="release-phase-name">Phase 2</div>
+              <div class="release-type-chip" style="background:#f5f3ff; color:#6d28d9;">GA</div>
+            </div>
+            <div class="release-phase-content">
+              <h4>Full rollout with advanced features and reporting</h4>
+              <ul>
+                <li>≥ 30% of active merchants with a published catalogue</li>
+                <li>Catalogue-driven GMV measurably growing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requirements -->
+      <div class="section" id="merchant-flows">
+        <div class="req-group-header">
+          <span class="req-group-label">A. Merchant flows</span>
+          <span style="font-size:12px; color:var(--text-muted);">10 tickets · Each maps to one ClickUp ticket</span>
+        </div>
+
+        <!-- A-1 -->
+        <div class="ticket open" id="a1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-1</span>
+            <span class="ticket-title">Create and manage product catalogue</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id merchant, I want to create and manage a product catalogue inside Paper.id, so I can list my products with prices and make them available for ordering.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Dashboard → Product Catalogue (new left nav)</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Context</strong>
+              Today, merchants manage product lists outside Paper.id — WhatsApp messages, spreadsheets, printed price lists.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Access &amp; navigation</div>
+              <ul class="ac-list">
+                <li>Product Catalogue accessible from the left navigation menu</li>
+                <li>Empty state shows a clear CTA to add the first product</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Add product</div>
+              <ul class="ac-list">
+                <li>Fields: Product Name (required, max 100 chars), Description (optional, max 500 chars), Price (required, IDR, &gt; 0), Product Image (optional, JPG/PNG, max 5MB), SKU (optional), Unit (optional, e.g. pcs, box, kg)</li>
+                <li>Required fields validated on submission; inline error shown on failure</li>
+                <li>Product appears in the catalogue list immediately on save</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Edit &amp; delete product</div>
+              <ul class="ac-list">
+                <li>Merchant can edit any product field; changes reflect immediately across the catalogue and storefront</li>
+                <li>Delete triggers a confirmation modal before removal</li>
+                <li>Deleted products are removed from both the merchant list and the public storefront URL</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Storefront URL generation</div>
+              <ul class="ac-list">
+                <li>Unique storefront URL auto-generated when the first product is saved</li>
+                <li>URL is permanent per merchant account unless manually reset</li>
+                <li>Merchant can copy the URL from the Product Catalogue module</li>
+                <li>URL leads to the customer-facing catalogue page — no login required for buyers</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Store settings</div>
+              <ul class="ac-list">
+                <li><strong>Require delivery address</strong> — toggle in store settings (Owner only). On by default. When turned off, the shipping address field is hidden from the customer order form — for merchants who operate pick-up only or deliver to a fixed location. <em>Phase 1: the field itself (and this toggle) is not yet built in the Phase 0 prototype — see B-3 for what Phase 0 actually collects.</em></li>
+                <li>Setting applies store-wide; individual product-level overrides are Phase 1.</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">6 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Price ≤ 0 → inline error: <code>"Price must be greater than 0"</code></li>
+                <li>Image upload failure → product saves without image; non-blocking warning shown</li>
+                <li>Catalogue must support ≥ 100 products without performance degradation</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-2 -->
+        <div class="ticket" id="a2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-2</span>
+            <span class="ticket-title">Create order on behalf of customer</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to select products from my catalogue and build an order for a specific customer, so I can capture the order quickly without the customer needing to browse the catalogue themselves.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Product Catalogue module → Create Order</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Product selection</div>
+              <ul class="ac-list">
+                <li>Merchant can browse, search (by name or SKU), and add products from their catalogue</li>
+                <li>Minimum quantity per line item: 1</li>
+                <li>Merchant can adjust quantities or remove items before confirming</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Cart review</div>
+              <ul class="ac-list">
+                <li>Cart shows: product name, SKU (if set), unit price, quantity, line total; subtotal; custom fields (if added — see below); grand total</li>
+                <li>Cart persists within the same session if the merchant navigates away</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Discount &amp; other adjustments <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="ac-list">
+                <li>There is no separate fixed "discount" field. Discounts, fees, and any other adjustment all use the same generic custom-field mechanism — see A-10.</li>
+                <li>Merchant adds one or more custom fields, each with its own editable label (e.g. "Discount", "Shipping fee") and a signed IDR amount (+ or −)</li>
+                <li>Each field appears as its own line item; grand total = subtotal ± sum of all custom field values</li>
+                <li>Merchant can remove any custom field line before confirming</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Order confirmation</div>
+              <ul class="ac-list">
+                <li>Before confirming, merchant enters: Customer Name (required), Customer WhatsApp Number (required, validated for WA format)</li>
+                <li>Final order summary shown before tapping "Confirm Order"</li>
+                <li>On confirm, the order is staged as a draft, linked to the merchant's account, ready to send via WhatsApp (A-3) — no Sales Order document is created; only the SI and PayIn are auto-generated later, once the customer pays (A-5)</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Empty cart on confirm → <code>"Please add at least one product to create an order"</code></li>
+                <li>Invalid WA number → <code>"Please enter a valid WhatsApp number"</code></li>
+                <li>Product price changes after being added to cart → cart updates to latest price with notice: <code>"Price for [Product Name] has been updated"</code></li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-3 -->
+        <div class="ticket" id="a3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-3</span>
+            <span class="ticket-title">Send order to customer via WhatsApp</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to send a confirmed order to my customer via WhatsApp, so they can review and pay without me typing out the order details manually.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Order confirmation screen → "Send via WhatsApp" or "Copy Link"</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Send via WhatsApp</div>
+              <ul class="ac-list">
+                <li>Opens <code>wa.me</code> with the customer's number pre-filled and a pre-composed message: merchant/business name, order summary (products, quantities, total), and the unique order link</li>
+                <li>Merchant can edit the message before sending</li>
+                <li>No WA Business API required for Phase 0</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Copy link</div>
+              <ul class="ac-list">
+                <li>"Copy Link" copies the unique order link to clipboard</li>
+                <li>Success toast: <code>"Order link copied to clipboard"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Order link behaviour</div>
+              <ul class="ac-list">
+                <li>Link is unique per order; directs the customer to an order summary with a "Confirm &amp; Pay" action</li>
+                <li>Once paid, the link stays accessible (read-only order/receipt view) for <strong>24 hours</strong>, then expires — same rule as B-3 §5</li>
+                <li>Already paid: <code>"This order has already been completed. Thank you!"</code></li>
+                <li>Cancelled: <code>"This order is no longer available"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Resend</div>
+              <ul class="ac-list">
+                <li>Merchant can resend or re-copy the order link from the order detail page at any time</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>WhatsApp not detected on device → fall back to Copy Link with notice: <code>"WhatsApp not detected. Please copy the link and send manually"</code></li>
+                <li>Expired or invalid order link → customer sees an error page with support contact</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-4 -->
+        <div class="ticket" id="a4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-4</span>
+            <span class="ticket-title">Review and confirm incoming customer order</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to review orders that customers have already paid for via my public storefront, and confirm or cancel within 30 minutes — so I stay in control of which orders I fulfil, without blocking the customer's checkout.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">In-app notification → Order detail page</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Order notification</div>
+              <ul class="ac-list">
+                <li>Merchant receives an in-app notification the moment a customer's payment succeeds (not at order submission) — see A-7</li>
+                <li>Notification shows: customer name, phone number, items ordered, order total, and payment method</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Order review</div>
+              <ul class="ac-list">
+                <li>Merchant can view the full order: line items, quantities, prices, customer notes, and any custom fields the customer applied (see A-10)</li>
+                <li>Payment Status is already "Paid" and the SI/PayIn already exist by the time the merchant sees this — see A-5</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Confirm order</div>
+              <ul class="ac-list">
+                <li>Merchant taps "Confirm order" → Order Status → "Confirmed". Payment Status is unaffected (it's already "Paid")</li>
+                <li>No invoice or payment link is generated at this step — both were already created automatically when payment succeeded (A-5)</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Cancel order</div>
+              <ul class="ac-list">
+                <li>Merchant can cancel a paid order instead of confirming it — Order Status → "Cancelled"</li>
+                <li>Refund behaviour depends on payment method and settlement timing — see A-5 §7 and <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a></li>
+                <li>Customer's order link updates to: <code>"This order is no longer available"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>If the merchant does not confirm or cancel within <strong>30 minutes of payment</strong>, the system auto-cancels the order and refunds it in full — there is no auto-confirm</li>
+                <li>If the merchant's account is suspended, the storefront shows: <code>"This catalogue is temporarily unavailable"</code> and new orders cannot be received</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-5 -->
+        <div class="ticket" id="a5">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-5</span>
+            <span class="ticket-title">Auto document creation &amp; auto-reconciliation</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want SI and PayIn to be automatically created and linked when my customer pays, so I never have to manually create documents or reconcile payments.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Triggered automatically on successful payment (Flow A &amp; B)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Trigger</div>
+              <ul class="ac-list">
+                <li>Fires when the customer successfully completes payment — at checkout (Flow B) or via the order link (Flow A)</li>
+                <li>No merchant action required. This happens before the merchant confirms — see A-4</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Document creation (within 30s of payment) <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="ac-list">
+                <li>Sales Invoice (SI): generated with items, quantities, prices, custom fields (A-10), payment terms, and due date</li>
+                <li>PayIn: records the payment received, linked to the SI</li>
+                <li>The two documents are interlinked: SI → PayIn. No Sales Order document is created in Phase 0.</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Auto-reconciliation</div>
+              <ul class="ac-list">
+                <li>PayIn automatically reconciled against SI — no manual matching required</li>
+                <li>SI status → "Paid"</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Merchant dashboard</div>
+              <ul class="ac-list">
+                <li>SI and PayIn appear in the merchant dashboard immediately after payment</li>
+                <li>Each document links to the related documents</li>
+                <li>Payment Status in the Product Catalogue order list → "Paid". Order Status stays "Pending" until the merchant confirms or cancels (A-4) — the two are tracked separately, see <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Payment notification</div>
+              <ul class="ac-list">
+                <li>In-app notification: <code>"Payment received for Order #[ID] — [Name] paid IDR [AMOUNT]"</code></li>
+                <li>Push/email notification per the merchant's notification preferences</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">6 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Document creation failure after payment → payment is still recorded; system retries up to 3 times; merchant alerted if all retries fail</li>
+                <li>Insufficient permissions to create the SI → system error shown; support team notified</li>
+                <li>Duplicate payment attempt → handled by payment gateway; only one PayIn created per order</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">7 · Cancellation &amp; refund reconciliation <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="edge-list">
+                <li><strong>Auto-cancelled (30-min confirmation window elapses unconfirmed):</strong> Payment Status → "Refunded". The auto-generated SI is <strong>deleted</strong>, not reverted to "Unpaid" — it should never have existed as a billable document. The PayIn record is deleted too.</li>
+                <li><strong>Merchant cancels a CC order still within the settlement SLA</strong> (funds not yet credited to the merchant's Active Balance): same as above — Payment Status → "Refunded", SI <strong>deleted</strong>, PayIn <strong>deleted</strong>. The refund is programmatic via the payment gateway, no manual step.</li>
+                <li><strong>Merchant cancels a CC order that has already settled into Active Balance, or any VA order:</strong> funds have genuinely arrived, so Payment Status stays "Paid", SI stays "Paid", and the PayIn record is left untouched. Requires a manual refund by Paper.id ops.</li>
+                <li><strong>Merchant marks a manual refund complete:</strong> Payment Status → "Refunded", SI reverts to "Unpaid" (stays on record — it isn't deleted, since real money did move). The PayIn record is left unchanged.</li>
+                <li>Net effect: SI/PayIn are only ever <em>deleted</em> when no money actually settled with the merchant; whenever real funds moved, the documents stay on record and simply change status.</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- A-6 -->
+        <div class="ticket" id="a6">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-6</span>
+            <span class="ticket-title">Order management dashboard</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want a single view of all orders — with Order Status and Payment Status tracked separately — so I can manage incoming orders without switching between notifications and individual order pages.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Product Catalogue module → Orders tab</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Order list <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="ac-list">
+                <li><strong>Order Status</strong> tabs (the merchant's approval workflow): <strong>All / Pending / Confirmed / Done / Cancelled</strong></li>
+                <li><strong>Payment Status</strong> is shown as its own column, not a tab: <strong>Awaiting Payment / Paid / Refunded / Unpaid</strong> — see <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a></li>
+                <li>Source filter: <strong>All orders / From customers / Created by you</strong> — distinguishes self-serve (Flow B) orders from merchant-initiated (Flow A) orders</li>
+                <li>Each row: order ID, buyer name, source badge, item count, total (IDR), payment method (CC / VA), time submitted, Order Status badge, Payment Status badge</li>
+                <li>Default sort: most recent first; paginated at 20 rows per page</li>
+                <li>Date range filter and payment method filter (CC / VA / All) available</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Order detail <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="ac-list">
+                <li>Full line items: product name, quantity, unit price, line total</li>
+                <li>Applied custom fields (if any — see A-10); tax breakdown per line item</li>
+                <li>Buyer contact: name, phone number, order notes <em>(shipping address is Phase 1 — see A-1, B-3)</em></li>
+                <li>Invoice number, Order Status, and Payment Status, with links to the SI and PayIn once they exist</li>
+                <li>Action buttons, shown based on current state (see <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a> for exactly when each appears):
+                  <ul style="margin-top:6px;">
+                    <li><strong>Confirm order / Cancel order</strong> — Pending orders (before payment: simple cancel, no refund; after payment: 30-minute window to confirm or cancel)</li>
+                    <li><strong>Cancelled</strong> — Confirmed or Pending+Paid orders, to cancel after payment (refund behaviour depends on method/settlement — A-5 §7)</li>
+                    <li><strong>Mark as Delivered</strong> — Confirmed orders, sets Order Status to "Done"</li>
+                    <li><strong>Refunded</strong> — Cancelled orders still showing Payment Status "Paid," once the merchant has completed a manual refund</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Summary bar</div>
+              <ul class="ac-list">
+                <li>Pinned at top: <strong>Pending (requires action)</strong> count, <strong>Orders today</strong>, <strong>Revenue today</strong> (IDR)</li>
+                <li>Values update in real time as orders are confirmed, cancelled, or paid</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Edge cases <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <ul class="edge-list">
+                <li>No orders yet: <code>"No orders yet. Share your catalogue link to start receiving orders."</code></li>
+                <li>Zero pending: <code>"You're all caught up"</code> shown in the Pending tab</li>
+                <li>Cancelled orders (whether declined, cancelled after payment, or auto-cancelled by timeout) all remain visible in history under the single <code>Cancelled</code> Order Status, with the specific reason shown in the order detail</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-7 -->
+        <div class="ticket" id="a7">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-7</span>
+            <span class="ticket-title">Notification spec</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want timely notifications about order activity so I can respond quickly and not miss a sale. As a customer, I want to be kept informed at every step so I know my order is progressing.</p>
+            </div>
+            <div class="context-box">
+              <strong>Note</strong>
+              WhatsApp notifications for the merchant require the Paper.id account to be linked to WhatsApp. In-app push is always delivered regardless of WhatsApp status.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Merchant notifications <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <div class="notif-rows">
+                <div class="notif-row">
+                  <div class="notif-trigger">Payment received — action needed</div>
+                  <div class="notif-message">"Payment received for Order #[ID] — [Name] paid Rp [Total]. Confirm or cancel within 30 minutes."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-inapp">In-app</span><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Expiring soon (5 min left)</div>
+                  <div class="notif-message">"Order from [Name] auto-cancels in 5 minutes if not confirmed."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-inapp">In-app</span><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order auto-cancelled</div>
+                  <div class="notif-message">"Order from [Name] was automatically cancelled and refunded — not confirmed within 30 minutes."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-inapp">In-app</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="ac-group" style="margin-top:1.25rem;">
+              <div class="ac-group-title">Customer notifications — WhatsApp only, to phone number provided at checkout <span style="font-weight:400; color:var(--text-secondary);">(updated)</span></div>
+              <div class="notif-rows">
+                <div class="notif-row">
+                  <div class="notif-trigger">Payment successful</div>
+                  <div class="notif-message">"Payment successful — Order #[ID] from [Merchant]. Amount: Rp [Amount]. [Merchant] will confirm within 30 minutes."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order confirmed</div>
+                  <div class="notif-message">"Good news — [Merchant] has confirmed your order #[ID] and it's being prepared."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order cancelled (before payment)</div>
+                  <div class="notif-message">"Sorry, [Merchant] is unable to fulfil your order. No charge has been made."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order cancelled (after payment)</div>
+                  <div class="notif-message">"Sorry, [Merchant] has cancelled your order #[ID]. Your payment of Rp [Amount] is being refunded."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order auto-cancelled (30 min unconfirmed)</div>
+                  <div class="notif-message">"Your order #[ID] wasn't confirmed in time and has been automatically cancelled. Your payment of Rp [Amount] is being refunded in full."</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+                <div class="notif-row">
+                  <div class="notif-trigger">Order delivered</div>
+                  <div class="notif-message">"Your order #[ID] from [Merchant] has been marked as delivered. Thank you for your order!"</div>
+                  <div class="notif-channels"><span class="channel-chip ch-wa">WhatsApp</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-8 -->
+        <div class="ticket" id="a8">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-8</span>
+            <span class="ticket-title">Invoice &amp; tax handling</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want my auto-generated invoices to correctly apply the right tax per product so my records are compliant and I do not have to manually adjust invoices after they are sent.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Tax classifications per product</div>
+              <ul class="ac-list">
+                <li><strong>PPN 11%</strong> — standard VAT on goods and most taxable services. Applied on top of product price.</li>
+                <li><strong>Pajak Daerah (custom %)</strong> — regional tax entered as a custom percentage by the merchant. Common for F&amp;B (Pajak Restoran, typically 10%). Rate varies by region and service type.</li>
+                <li><strong>Non-taxable (exempt)</strong> — education fees (jasa pendidikan), certain medical and health services, and any product where no tax applies.</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Auto-invoice calculation rules</div>
+              <ul class="ac-list">
+                <li>Tax calculated per line item based on the product's tax classification</li>
+                <li>Custom fields (including any discount, entered as a negative field — see A-10) applied to subtotal <strong>before</strong> tax is calculated</li>
+                <li>Each tax type shown as its own line on the invoice — PPN and Pajak Daerah never blended</li>
+                <li>Invoice total = subtotal ± custom fields (A-10) + all tax lines</li>
+                <li>PKP merchants: PPN invoices flagged for e-Faktur — <strong>e-Faktur generation is Phase 1</strong></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Examples</div>
+              <div class="tax-example">
+                <h4>F&amp;B Restoran — Pajak Daerah 10%</h4>
+                <div class="tax-line"><span>Nasi Goreng Spesial × 1</span><span>Rp 45,000</span></div>
+                <div class="tax-line"><span>Es Teh Manis × 2</span><span>Rp 20,000</span></div>
+                <div class="tax-line subtotal"><span>Subtotal</span><span>Rp 65,000</span></div>
+                <div class="tax-line tax-row"><span>Pajak Restoran 10%</span><span>Rp 6,500</span></div>
+                <div class="tax-line grand"><span>Total</span><span>Rp 71,500</span></div>
+              </div>
+              <div class="tax-example">
+                <h4>Clinic — Mixed (PPN 11% + Non-taxable)</h4>
+                <div class="tax-line"><span>Facial Treatment Premium × 1</span><span>Rp 500,000</span></div>
+                <div class="tax-line"><span>Konsultasi Dokter × 1 (exempt)</span><span>Rp 150,000</span></div>
+                <div class="tax-line subtotal"><span>Subtotal</span><span>Rp 650,000</span></div>
+                <div class="tax-line tax-row"><span>PPN 11% (on Rp 500,000)</span><span>Rp 55,000</span></div>
+                <div class="tax-line grand"><span>Total</span><span>Rp 705,000</span></div>
+              </div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Edge cases</div>
+              <ul class="edge-list">
+                <li>No tax classification set → defaults to <code>Non-taxable</code>; warning badge shown on product in catalogue management</li>
+                <li>Pajak Daerah rate left blank → product cannot be saved: <code>"Please enter the applicable tax rate"</code></li>
+                <li>Mixed-tax order (PPN + Pajak Daerah in same cart) → both tax lines shown separately. No cross-tax blending.</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-9 -->
+        <div class="ticket" id="a9">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-9</span>
+            <span class="ticket-title">Seller onboarding &amp; first-time setup</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a new merchant, I want to set up my catalogue quickly and share it with buyers so I can start receiving orders the same day I discover the feature.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Dashboard banner → "Set up your store" CTA (shown until first product is published)</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Target</span><span class="ticket-meta-value">Setup completion in under 5 minutes</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Onboarding steps</div>
+              <div class="ob-steps">
+                <div class="ob-step">
+                  <div class="ob-step-num">1</div>
+                  <div class="ob-step-body">
+                    <h4>Welcome</h4>
+                    <p>"Set up your store in under 5 minutes." Preview what they will get: a shareable URL, a QR code, and a WhatsApp share link.</p>
+                  </div>
+                </div>
+                <div class="ob-step">
+                  <div class="ob-step-num">2</div>
+                  <div class="ob-step-body">
+                    <h4>Store identity</h4>
+                    <p>Store name (pre-filled from company name, editable), description (optional, max 200 chars), logo (pulled from company profile if set, else upload). Custom slug — <code>paper.id/store/[slug]</code> — pre-filled as a sanitised company name; real-time availability check with inline alternatives if taken.</p>
+                  </div>
+                </div>
+                <div class="ob-step">
+                  <div class="ob-step-num">3</div>
+                  <div class="ob-step-body">
+                    <h4>Add first product</h4>
+                    <p>Stripped-down form: name, price, photo (optional). CTA: "Add another product" or "Continue to publish". Skip option saves catalogue as draft — not yet live.</p>
+                  </div>
+                </div>
+                <div class="ob-step">
+                  <div class="ob-step-num">4</div>
+                  <div class="ob-step-body">
+                    <h4>Go live</h4>
+                    <p>Catalogue published. Merchant sees their storefront URL (copy button), downloadable QR code (PNG), and WhatsApp share button. CTA to preview the storefront.</p>
+                  </div>
+                </div>
+                <div class="ob-step">
+                  <div class="ob-step-num">5</div>
+                  <div class="ob-step-body">
+                    <h4>Post-setup</h4>
+                    <p>"You're set up. Share your link to start receiving orders." Quick actions: Add more products · View your store · Copy store link.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Empty state (merchant skips onboarding)</div>
+              <ul class="ac-list">
+                <li>Full-screen prompt in Product Catalogue module: "Your catalogue is empty. Add your first product to start receiving orders."</li>
+                <li>Storefront URL not active until at least one product is published</li>
+                <li>If someone visits the URL before any product is added: <code>"This catalogue is not available yet. Please check back later."</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases</div>
+              <ul class="edge-list">
+                <li>Slug taken → real-time <code>"[slug] is taken"</code>; 2–3 auto-generated alternatives suggested</li>
+                <li>Merchant exits mid-setup → progress not saved; setup restarts from step 1 (Phase 0 — no partial save)</li>
+                <li>Company logo not set → empty placeholder shown with "Upload logo" CTA; skippable</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Success metric</div>
+              <ul class="ac-list">
+                <li>% of merchants who complete setup (≥ 1 product published) within 24 hours of first accessing the feature</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-10 -->
+        <div class="ticket" id="a10">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-10</span>
+            <span class="ticket-title">Custom order fields (discounts, fees &amp; other adjustments)</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a merchant, I want to add my own labelled charges or deductions to an order — not just a fixed "discount" or "tax" field — so I can reflect however my business actually adjusts a price (shipping fee, packaging fee, loyalty discount, rounding adjustment, etc.).</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Order builder (A-2) → "Add field" → applies to order total → reflected in customer's order review (B-2/B-3)</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Context</strong>
+              Phase 0 originally scoped a fixed discount/tax field as Phase 1. Instead of hard-coding fixed field types, this ticket builds one generic, merchant-editable custom field mechanism that covers discounts, fees, and any other named adjustment a merchant needs — avoiding a rebuild later when Phase 1's tiered pricing/tax work begins.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Adding a custom field</div>
+              <ul class="ac-list">
+                <li>Merchant can add one or more custom fields to an order from the order builder (Flow A) or catalogue-level defaults (applies to every order)</li>
+                <li>Each field has: <strong>Label</strong> (free text, editable, max 30 chars — e.g. "Discount", "Shipping fee", "Loyalty credit") and <strong>Value</strong> (numeric input, IDR, positive or negative)</li>
+                <li>Merchant chooses whether the field adds to or subtracts from the order subtotal (toggle: <code>+</code> / <code>−</code>)</li>
+                <li>Multiple custom fields can be added to the same order; each appears as its own line</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Calculation &amp; display</div>
+              <ul class="ac-list">
+                <li>Order total = subtotal ± sum of all custom field values</li>
+                <li>Each custom field line is shown by its label and value in: the merchant's order builder, the customer's order review (cart/checkout), the generated Sales Invoice, and the PayIn amount</li>
+                <li>Values are read-only to the customer — only the merchant can add, edit, or remove fields</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Field value left blank or non-numeric → <code>"Enter a valid amount"</code>, blocks order submission</li>
+                <li>Field would make the order total negative → <code>"Total can't be less than Rp 0. Adjust your fields."</code></li>
+                <li>Merchant edits or removes a field after the customer has already submitted the order but before confirming → customer sees an updated total notice before payment link is sent</li>
+                <li>Label left blank → defaults to <code>"Adjustment"</code></li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Customer flows -->
+      <div class="section" id="customer-flows">
+        <div class="req-group-header">
+          <span class="req-group-label">B. Customer flows</span>
+          <span style="font-size:12px; color:var(--text-muted);">4 tickets · Each maps to one ClickUp ticket</span>
+        </div>
+
+        <!-- B-1 -->
+        <div class="ticket" id="b1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-1</span>
+            <span class="ticket-title">Access storefront &amp; browse catalogue</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer of a Paper.id merchant, I want to open the merchant's catalogue via a shared link without creating an account, so I can browse and order quickly.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Merchant's storefront URL (shared via WhatsApp or any channel)</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Context</strong>
+              Today, customers have no digital way to browse a merchant's products. All ordering happens via WhatsApp chat or phone, leading to miscommunication and delays.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Catalogue access</div>
+              <ul class="ac-list">
+                <li>Opens in any mobile or desktop browser — <strong>no login required to browse</strong>. OTP verification (B-4) happens only when the customer taps "Continue" after selecting products and entering their info (B-2), keeping the top-of-funnel completely frictionless.</li>
+                <li>Displays merchant's business name, logo (if set), and product list</li>
+                <li>Mobile-responsive, optimised for WhatsApp-referred traffic (majority on mobile)</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Catalogue display</div>
+              <ul class="ac-list">
+                <li>Each product shows: image (or placeholder), name, description (if set), price (IDR with thousand separators), unit (if set)</li>
+                <li>Paginated or infinite scroll if &gt; 20 products</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · State handling</div>
+              <ul class="ac-list">
+                <li>No products: <code>"This catalogue is currently empty. Please contact the seller"</code></li>
+                <li>Invalid URL / inactive account: <code>"This catalogue is not available. Please contact the seller"</code></li>
+                <li>Suspended account: <code>"This catalogue is temporarily unavailable"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Performance</div>
+              <ul class="ac-list">
+                <li>Page loads within 3 seconds on standard 4G mobile</li>
+                <li>Images are lazy-loaded to avoid blocking initial page render</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-2 -->
+        <div class="ticket" id="b2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-2</span>
+            <span class="ticket-title">Select products &amp; enter buyer info <span style="font-weight:400; color:var(--text-secondary); font-size:12px;">(updated — combined into one page)</span></span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer, I want to pick my products and enter my details on one page, so I can move straight to verifying my number without extra screens in between.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Storefront page (B-1) — product picker and buyer info live on the same page, not a separate cart screen</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Note</strong>
+              There is no dedicated cart-review page in Phase 0. The storefront page shows supplier info, buyer info fields, and the product grid together; quantity is adjusted inline per product, and the running subtotal/CTA is pinned at the bottom of that same page.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Product selection</div>
+              <ul class="ac-list">
+                <li>Each product shows a "+" button; tapping it reveals an inline quantity stepper (− qty +) in place of the button</li>
+                <li>Customer can adjust quantity or remove a product (down to 0) directly on the same grid — no separate cart screen to navigate to</li>
+                <li>Minimum quantity 1 per line item once added, maximum 9,999 (or merchant-defined)</li>
+                <li>Prices are fixed and read-only — customer cannot modify prices</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Buyer info</div>
+              <ul class="ac-list">
+                <li>Name (required) and phone number (required) fields sit alongside the supplier info at the top of the same page</li>
+                <li>Order notes (optional, free text) — e.g. "Please deliver before the 5th"</li>
+                <li><em>Shipping address is Phase 1 — not collected in the Phase 0 prototype. See A-1, B-3.</em></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Footer &amp; continue</div>
+              <ul class="ac-list">
+                <li>Sticky footer shows: subtotal (product count + amount) and a "Lanjutkan" (Continue) button</li>
+                <li>Continue button is disabled while the cart is empty</li>
+                <li>Tapping Continue proceeds straight to OTP verification (B-4) — not a separate order-confirmation page</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Product price or availability changes while selecting → grid updates to latest; notice: <code>"[Product Name] has been updated. Please review your selection"</code></li>
+                <li>Product removed from catalogue while selected → item flagged as "No longer available"; customer must remove flagged items before continuing</li>
+                <li>Empty selection on Continue → button stays disabled, no separate error state needed</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-4 -->
+        <div class="ticket" id="b4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-4</span>
+            <span class="ticket-title">Customer OTP verification</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer, I want to verify my phone number quickly before paying, so the merchant has a confirmed contact and I can track my order.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">Storefront page (B-2) → taps "Lanjutkan" (Continue) → OTP screen</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Trigger</strong>
+              Customer taps "Lanjutkan" on the combined storefront page (B-2), having already entered name, phone, and selected products
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Identity capture</div>
+              <ul class="ac-list">
+                <li>Name and phone number were already entered on the storefront page (B-2) — no re-entry here</li>
+                <li>System sends 6-digit OTP to that phone number via WhatsApp (primary) or SMS (fallback)</li>
+                <li>OTP valid for 5 minutes</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · OTP verification</div>
+              <ul class="ac-list">
+                <li>Customer enters the 6-digit OTP</li>
+                <li>On success: proceed straight to payment method selection (B-3) — no separate order form</li>
+                <li>On failure: <code>"Incorrect OTP. Please try again."</code> — retry up to 3 times</li>
+                <li>Resend OTP available after 60 seconds</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Edge cases</div>
+              <ul class="edge-list">
+                <li>OTP expires → <code>"Your code has expired. Request a new one."</code> — resend immediately</li>
+                <li>3 failed attempts → <code>"Too many attempts. Please wait 10 minutes before trying again."</code></li>
+                <li>Wrong phone entered → back button available before OTP is sent</li>
+                <li>WhatsApp fails → auto-fallback to SMS; both fail → <code>"We couldn't send a code to this number. Please check and try again."</code></li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-3 -->
+        <div class="ticket" id="b3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f0fdf4; color:#15803d;">B-3</span>
+            <span class="ticket-title">Choose payment method &amp; pay <span style="font-weight:400; color:var(--text-secondary); font-size:12px;">(updated)</span></span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a customer, I want to pay for my order right after verifying my number, so I don't have to wait for the merchant before I can complete my purchase.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Entry point</span><span class="ticket-meta-value">OTP verification (B-4) success → Payment method screen → Pay → Receipt</span></div>
+            </div>
+            <div class="context-box">
+              <strong>Note</strong>
+              There is no waiting-for-merchant step here, and no separate order-form page. Once OTP succeeds, the customer goes straight to choosing a payment method and paying — the merchant's confirm/cancel decision (A-4) happens afterward, within 30 minutes of payment.
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Payment method selection</div>
+              <ul class="ac-list">
+                <li>Customer chooses Credit Card or Virtual Account (or other methods the merchant has enabled)</li>
+                <li>Shows a billed-amount summary: subtotal, any custom fields applied (A-10), service fee, and total</li>
+                <li>No expiry on this screen — the customer can take as long as they need to choose and pay (see <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a>, row 1)</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Payment</div>
+              <ul class="ac-list">
+                <li>Credit Card is charged immediately on submission; Virtual Account is credited the moment the customer completes the bank transfer</li>
+                <li>Either way, Payment Status → "Paid" the instant it succeeds, and the SI + PayIn are created automatically (A-5) — before the merchant has done anything</li>
+                <li>Success: <code>"Payment successful! Your order has been received"</code></li>
+                <li>Failure: <code>"Payment failed. Please try again or use a different payment method"</code> — customer can retry</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">3 · Receipt &amp; what happens next</div>
+              <ul class="ac-list">
+                <li>Customer sees a receipt with order summary, total paid, and: <code>"[Merchant] will confirm your order within 30 minutes."</code></li>
+                <li>Name and phone are already verified (B-4) — no further identity step needed</li>
+                <li><em>Shipping address: Phase 1. The Phase 0 prototype collects name, phone, and order notes only (captured earlier, on B-2) — no address, delivery notes, or geolocation field yet. Once built, this will be entered before payment, alongside the fields already on B-2.</em></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">4 · Order/receipt link validity</div>
+              <ul class="ac-list">
+                <li>After paying, the customer can reopen their order/receipt link for <strong>24 hours</strong> to check status or re-download the receipt</li>
+                <li>After 24 hours the link expires: <code>"This link has expired. Please contact the merchant"</code></li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">5 · Edge cases</div>
+              <ul class="edge-list">
+                <li>Browser closed before payment → order stays at the payment method screen; customer can reopen and continue, no time limit</li>
+                <li>Duplicate payment attempt → <code>"This order has already been paid"</code></li>
+                <li>Payment gateway unavailable → <code>"Payment service is currently unavailable. Please try again in a few minutes"</code></li>
+                <li><strong>VA refund (edge case):</strong> If a customer completes a Virtual Account bank transfer and the order is subsequently cancelled, the refund cannot be processed programmatically — VA transfers are not reversible via the payment gateway. Resolution requires manual intervention by the Paper.id ops team; the Sales Invoice stays "Paid" until the refund is completed, then reverts to "Unpaid" (it is not deleted, since the funds genuinely arrived). CC payments still within the settlement SLA (not yet in the merchant's Active Balance) can be refunded directly via the payment gateway with no manual step — in that case the Sales Invoice and PayIn are deleted outright rather than reverted, since no funds ever actually settled. A CC payment that has already settled follows the same manual-refund path as VA. See A-5 · Cancellation &amp; refund reconciliation for the full breakdown.</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order & Payment Status Reference -->
+      <div class="section" id="status-reference">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fffbeb;">📋</div>
+          <h2 class="section-title">Order &amp; payment status reference</h2>
+        </div>
+        <p style="margin-bottom:1.25rem; color:var(--text-secondary); font-size:14px; line-height:1.6;">
+          Order Status (the merchant's approval workflow) and Payment Status (the money) are tracked separately. This table walks through every event in the order lifecycle and what happens to each of the four things the merchant can see: Order Status, Payment Status, the Sales Invoice, and the payment transaction list entry (PaperPay In). Rows 4 and 6a are highlighted — these are the cases where the Sales Invoice and payment record are <strong>deleted</strong> outright rather than reverted, since no funds ever actually settled with the merchant.
+        </p>
+        <div class="status-ref-wrap">
+          <table class="status-ref-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Event / trigger</th>
+                <th>Order Status</th>
+                <th>Payment Status</th>
+                <th>Sales Invoice</th>
+                <th>Payment Transaction List</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Customer is on the "choose payment method" page</td>
+                <td>Pending</td>
+                <td><strong>Awaiting Payment</strong></td>
+                <td>Not yet created</td>
+                <td>Not yet created</td>
+                <td>Only appears here. No expiry — the customer can take as long as they need.</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Payment completes (CC charged or VA transferred)</td>
+                <td>Pending</td>
+                <td><strong>Paid</strong></td>
+                <td><strong>Created</strong> — Paid</td>
+                <td><strong>Created</strong> — on record</td>
+                <td>The 30-minute confirm clock starts only now — not at order submission.</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Merchant confirms within 30 min</td>
+                <td><strong>Confirmed</strong></td>
+                <td>Paid</td>
+                <td>Stays Paid</td>
+                <td>Stays on record</td>
+                <td>No auto-confirm — only happens on explicit merchant action.</td>
+              </tr>
+              <tr class="sr-highlight">
+                <td>4</td>
+                <td>30 minutes pass with no merchant action</td>
+                <td><strong>Cancelled</strong> (auto)</td>
+                <td><strong>Refunded</strong></td>
+                <td><strong>Deleted</strong></td>
+                <td><strong>Deleted</strong></td>
+                <td>System auto-cancels and refunds in full — same outcome for CC and VA.</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Merchant declines before the customer has paid</td>
+                <td>Cancelled</td>
+                <td>Unpaid</td>
+                <td>Never created</td>
+                <td>Never created</td>
+                <td>Nothing was charged, so nothing to refund.</td>
+              </tr>
+              <tr class="sr-highlight">
+                <td>6a</td>
+                <td>Merchant cancels a paid <strong>CC</strong> order — still within the settlement SLA (funds not yet in Active Balance)</td>
+                <td>Cancelled</td>
+                <td><strong>Refunded</strong></td>
+                <td><strong>Deleted</strong></td>
+                <td><strong>Deleted</strong></td>
+                <td>Instant refund via the gateway — no manual step.</td>
+              </tr>
+              <tr>
+                <td>6b</td>
+                <td>Merchant cancels a paid <strong>CC</strong> order — already settled into Active Balance</td>
+                <td>Cancelled</td>
+                <td>Paid (unchanged)</td>
+                <td>Stays Paid</td>
+                <td>Stays on record</td>
+                <td>Behaves exactly like a VA cancellation (row 7) — a settled charge can't be reversed automatically.</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Merchant cancels a paid <strong>VA</strong> order</td>
+                <td>Cancelled</td>
+                <td>Paid (unchanged)</td>
+                <td>Stays Paid</td>
+                <td>Stays on record</td>
+                <td>VA funds are instant to the balance, so this is always the outcome for VA — never the 6a path.</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Merchant marks a cancelled order "Refunded" after completing the manual refund (applies to 6b and 7)</td>
+                <td>Cancelled</td>
+                <td><strong>Refunded</strong></td>
+                <td>Reverts to Unpaid</td>
+                <td><strong>Unchanged</strong>, stays on record</td>
+                <td>Not deleted here — the money genuinely arrived and left via a separate manual refund, so it stays for the books.</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>Merchant marks a Confirmed order delivered</td>
+                <td><strong>Done</strong></td>
+                <td>Paid</td>
+                <td>Stays Paid</td>
+                <td>Stays on record</td>
+                <td>Terminal status, set manually — no further changes expected.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Assets -->
+      <div class="section" id="assets">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">📂</div>
+          <h2 class="section-title">Assets</h2>
+        </div>
+        <table class="assets-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Description</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.figma.com/design/qYPwoBvKpp4SweN5lyLEYl/" style="color:var(--accent-text); text-decoration:none;">PO Form (Figma)</a></td>
+              <td style="color:var(--text-secondary);">Existing PO Form reference for Phase 0 UI/UX</td>
+              <td><span class="status-chip status-existing">Existing</span></td>
+            </tr>
+            <tr>
+              <td><a href="https://www.figma.com/design/C35I87Vq7EzeZEiQfaniEM/Product-Catalogue?node-id=1-5&t=Jtssg0AXaxmHov1U-1" style="color:var(--accent-text); text-decoration:none;">Product Catalogue Lo-Fi (Figma)</a></td>
+              <td style="color:var(--text-secondary);">Low-fidelity wireframes for catalogue, storefront, and order flows</td>
+              <td><span class="status-chip status-existing">Existing</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-secondary);">Product Catalogue Hi-Fi — Merchant flow</td>
+              <td style="color:var(--text-secondary);">Hi-fi for catalogue management, order creation, and order review</td>
+              <td><span class="status-chip status-pending">Not started</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-secondary);">Product Catalogue Hi-Fi — Customer flow</td>
+              <td style="color:var(--text-secondary);">Hi-fi for storefront, cart, order submission, and payment</td>
+              <td><span class="status-chip status-pending">Not started</span></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text-secondary);">Interactive Prototype v1.0 (HTML)</td>
+              <td style="color:var(--text-secondary);">Clickable merchant + customer prototype — storefront setup, catalogue, orders, PaperPay In, and the full order/payment status &amp; refund logic in section A-5</td>
+              <td><span class="status-chip status-draft">Prototype</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Out of scope -->
+      <div class="section" id="oos">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">🔜</div>
+          <h2 class="section-title">Out of scope on this phase</h2>
+        </div>
+        <ul class="oos-list">
+          <li>Tier pricing <span class="scope-label">Phase 1</span></li>
+          <li>Tiered/volume-based pricing and a dedicated tax engine <span class="scope-label">Phase 1</span> — A-10's custom fields cover flat discounts/fees for Phase 0</li>
+          <li>Shipping address capture <span class="scope-label">Phase 1</span> — Phase 0 collects name, phone, and order notes only; A-1's delivery-address toggle and B-3's shipping address field are both Phase 1</li>
+          <li>Merchant-controlled delivery process <span class="scope-label">Phase 1</span></li>
+          <li>Advanced reporting and analytics dashboard <span class="scope-label">Phase 1</span></li>
+        </ul>
+
+      </div>
+
+      <!-- Good to have -->
+      <div class="section" id="good-to-have">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">💡</div>
+          <h2 class="section-title">Good to have — validate demand first</h2>
+        </div>
+        <p style="color:var(--text-secondary); margin-bottom:1.25rem;">These are directionally useful but add meaningful complexity. Do not commit them to a phase until Phase 0 data shows merchants actually need them.</p>
+        <ul class="oos-list">
+          <li style="flex-direction:column; align-items:flex-start; gap:4px;">
+            <div style="display:flex; align-items:center; gap:10px; width:100%;">
+              <span>Bulk order discounts and layered pricing per customer tier or industry</span>
+              <span class="scope-label" style="margin-left:auto; background:var(--bg-muted); color:var(--text-muted);">Validate first</span>
+            </div>
+            <span style="font-size:12px; color:var(--text-muted); padding-left:0;">Complicates the order confirmation flow and pricing model significantly. Worth adding only if data shows repeat B2B merchants are blocked without it.</span>
+          </li>
+          <li style="flex-direction:column; align-items:flex-start; gap:4px;">
+            <div style="display:flex; align-items:center; gap:10px; width:100%;">
+              <span>Minimum Order Quantity (MOQ) enforcement per product</span>
+              <span class="scope-label" style="margin-left:auto; background:var(--bg-muted); color:var(--text-muted);">Validate first</span>
+            </div>
+            <span style="font-size:12px; color:var(--text-muted); padding-left:0;">Adds friction to the customer cart experience. Only relevant for distributors with strict wholesale minimums — a small subset of Phase 0 merchants.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Flow Diagram -->
+      <div class="section" id="flow-diagram">
+        <div class="section-header">
+          <div class="section-icon" style="background:#eff6ff;">🔀</div>
+          <h2 class="section-title">Order &amp; payment flow</h2>
+        </div>
+        <p style="margin-bottom:1.5rem;">Merchant–customer interaction for Credit Card and Virtual Account orders. Both flows share the same browsing, info, and OTP steps; they diverge briefly at payment capture, then reconverge on one shared 30-minute merchant confirmation window. <em>(Updated: payment now happens immediately, before any merchant review — see Payment flow and <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a> for the full model.)</em></p>
+
+        <div class="fc-legend">
+          <div class="fc-legend-item"><div class="fc-legend-swatch" style="background:#dcfce7; border:1px solid #86efac;"></div>Customer</div>
+          <div class="fc-legend-item"><div class="fc-legend-swatch" style="background:#dbeafe; border:1px solid #93c5fd;"></div>Merchant</div>
+          <div class="fc-legend-item"><div class="fc-legend-swatch" style="background:#ede9fe; border:1px solid #c4b5fd;"></div>System (Paper.id)</div>
+          <div class="fc-legend-item"><div class="fc-legend-swatch" style="background:#fef2f2; border:1px solid #fca5a5;"></div>Rejection / error</div>
+          <div class="fc-legend-item"><div class="fc-legend-swatch" style="background:#fffbeb; border:1px solid #fcd34d;"></div>Warning / edge case</div>
+        </div>
+
+        <!-- Shared start -->
+        <div class="fc-shared-wrap">
+          <div class="fc-shared">
+            <div class="fc-shared-label">Common start — both flows</div>
+            <div class="fc-box fc-c">
+              <div class="fc-box-actor">Customer</div>
+              <div class="fc-box-text">Opens storefront URL (shared by merchant via WhatsApp or any channel). No login required.</div>
+            </div>
+            <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+            <div class="fc-box fc-c">
+              <div class="fc-box-actor">Customer</div>
+              <div class="fc-box-text">Browses catalogue, selects products with quantities, enters name + phone + order notes — all on one page (B-2)</div>
+            </div>
+            <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+            <div class="fc-box fc-c">
+              <div class="fc-box-actor">Customer</div>
+              <div class="fc-box-text">Taps "Lanjutkan" — receives OTP via WhatsApp (SMS fallback), verifies identity (B-4)</div>
+            </div>
+            <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+            <div class="fc-box fc-c">
+              <div class="fc-box-actor">Customer</div>
+              <div class="fc-box-text">Selects payment method — <strong>Credit Card</strong> or <strong>Virtual Account</strong> (B-3). No expiry on this step.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split -->
+        <div class="fc-split">
+          <div class="fc-split-inner">
+            <div class="fc-split-l"></div>
+            <div class="fc-split-r"></div>
+          </div>
+        </div>
+
+        <!-- Two columns: payment capture only -->
+        <div class="fc-cols">
+
+          <!-- CC -->
+          <div class="fc-col">
+            <div class="fc-col-head">
+              <span class="fc-col-badge" style="background:#dbeafe; color:#1d4ed8;">Credit Card</span>
+              <div>
+                <div class="fc-col-title">Charged on payment</div>
+                <div class="fc-col-sub">No merchant gate — captured immediately</div>
+              </div>
+            </div>
+            <div class="fc-col-body">
+              <div class="fc-col-top"><div class="fc-col-top-line"></div><div class="fc-col-top-arr"></div></div>
+              <div class="fc-box fc-c">
+                <div class="fc-box-actor">Customer</div>
+                <div class="fc-box-text">Enters CC details and pays</div>
+              </div>
+              <div class="fc-gap"><div class="fc-gap-line fc-h14"></div><div class="fc-gap-arr"></div></div>
+              <div class="fc-box fc-s">
+                <div class="fc-box-actor">System · Paper.id</div>
+                <div class="fc-box-text">Charge <strong>captured immediately</strong>. Payment Status → "Paid." SI + PayIn auto-created and reconciled (A-5). No Sales Order document.</div>
+              </div>
+              <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+              <div class="fc-terminal fc-ok">✓ Continues to shared confirmation window below</div>
+            </div>
+          </div>
+
+          <!-- VA -->
+          <div class="fc-col">
+            <div class="fc-col-head">
+              <span class="fc-col-badge" style="background:#f0fdf4; color:#15803d;">Virtual Account</span>
+              <div>
+                <div class="fc-col-title">Instant to the balance</div>
+                <div class="fc-col-sub">VA number generated immediately — no expiry while awaiting transfer</div>
+              </div>
+            </div>
+            <div class="fc-col-body">
+              <div class="fc-col-top"><div class="fc-col-top-line"></div><div class="fc-col-top-arr"></div></div>
+              <div class="fc-box fc-s">
+                <div class="fc-box-actor">System · Paper.id</div>
+                <div class="fc-box-text">Dynamic VA number generated right away — no wait for merchant confirmation, no expiry</div>
+              </div>
+              <div class="fc-gap"><div class="fc-gap-line fc-h14"></div><div class="fc-gap-arr"></div></div>
+              <div class="fc-box fc-c">
+                <div class="fc-box-actor">Customer</div>
+                <div class="fc-box-text">Transfers to the VA</div>
+              </div>
+              <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+              <div class="fc-box fc-s">
+                <div class="fc-box-actor">System · Paper.id</div>
+                <div class="fc-box-text">Transfer received. Payment Status → "Paid." SI + PayIn auto-created and reconciled (A-5). No Sales Order document.</div>
+              </div>
+              <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+              <div class="fc-terminal fc-ok">✓ Continues to shared confirmation window below</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Shared post-payment confirmation window -->
+        <div class="fc-shared-wrap" style="margin-top:1.5rem;">
+          <div class="fc-shared">
+            <div class="fc-shared-label">Shared — merchant confirmation window (both CC and VA converge here)</div>
+            <div class="fc-box fc-m">
+              <div class="fc-box-actor">Merchant</div>
+              <div class="fc-box-text">Receives in-app + WhatsApp notification: buyer name, items, total, payment method — action needed</div>
+            </div>
+            <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+            <div class="fc-decision"><span class="fc-decision-icon">◇</span>Merchant reviews the already-paid order — <strong>30 minutes from payment</strong>, no auto-confirm</div>
+            <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+            <div class="fc-branches">
+              <div class="fc-branch">
+                <div class="fc-branch-tag fc-tag-confirm">✓ Confirm</div>
+                <div class="fc-box fc-s"><div class="fc-box-actor">System · Paper.id</div><div class="fc-box-text">Order Status → "Confirmed." Payment Status unchanged (already "Paid").</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-box fc-c"><div class="fc-box-actor">Customer</div><div class="fc-box-text">Notified via WhatsApp that the order is confirmed and being prepared</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-terminal fc-ok">✓ Order confirmed — merchant later marks "Done" once delivered</div>
+              </div>
+              <div class="fc-branch">
+                <div class="fc-branch-tag fc-tag-reject">✕ Cancel</div>
+                <div class="fc-box fc-s"><div class="fc-box-actor">System · Paper.id</div><div class="fc-box-text"><strong>CC, still within settlement SLA:</strong> auto-refunded via the gateway; SI &amp; PayIn deleted.<br><strong>CC already settled, or any VA:</strong> stays "Paid"; SI &amp; PayIn stay on record until a manual refund is completed and marked "Refunded."</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-box fc-e"><div class="fc-box-actor">Customer</div><div class="fc-box-text">Notified via WhatsApp: "Sorry, [Merchant] has cancelled your order. Your payment is being refunded."</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-terminal fc-cancelled">Order cancelled</div>
+              </div>
+              <div class="fc-branch">
+                <div class="fc-branch-tag fc-tag-expire">⏱ 30 min expires (no merchant action)</div>
+                <div class="fc-box fc-s"><div class="fc-box-actor">System · Paper.id</div><div class="fc-box-text">Auto-cancelled. Refunded in full — same outcome for CC and VA. SI &amp; PayIn deleted.</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-box fc-w"><div class="fc-box-actor">Customer</div><div class="fc-box-text">Notified via WhatsApp: "Your order wasn't confirmed in time and has been automatically cancelled. Your payment is being refunded in full."</div></div>
+                <div class="fc-gap"><div class="fc-gap-line fc-h10"></div><div class="fc-gap-arr"></div></div>
+                <div class="fc-terminal fc-cancelled">Order auto-cancelled</div>
+              </div>
+            </div>
+            <div class="fc-note">No auto-confirm exists anywhere in this flow — the only automatic transition is the 30-minute timeout to auto-cancel-and-refund. Everything else requires the merchant to act. See <a href="#status-reference" style="color:var(--accent-text);">Order &amp; payment status reference</a> for the complete status matrix, including the manual-refund follow-up step (row 8) and the "Done" terminal status (row 9).</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleTicket(header) {
+    const ticket = header.closest('.ticket');
+    ticket.classList.toggle('open');
+  }
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('[id]');
+
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= 120) current = section.id;
+    });
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').replace('#', '');
+      link.classList.toggle('active', href === current);
+    });
+  }
+
+  document.querySelector('.main').addEventListener('scroll', updateActiveNav);
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+</script>
+
+</body>
+</html>
