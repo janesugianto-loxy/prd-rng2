@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Catalogue — Complete Process & Status Flow</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f8f7;
+    --bg-muted: #f1f0ed;
+    --text: #1a1a18;
+    --text-secondary: #5c5c57;
+    --text-muted: #9c9b96;
+    --border: #e8e7e3;
+    --border-strong: #d4d3ce;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  /* ── Header ── */
+  .header { max-width: 1200px; margin: 0 auto 2rem; }
+  .header-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 6px; }
+  .header-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .header-sub { font-size: 13.5px; color: var(--text-secondary); max-width: 720px; line-height: 1.6; }
+
+  /* ── Legend ── */
+  .legend-wrap { max-width: 1200px; margin: 0 auto 2rem; display: flex; flex-wrap: wrap; gap: 2rem; }
+  .legend-group { display: flex; flex-direction: column; gap: 6px; }
+  .legend-group-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 2px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── Outer layout ── */
+  .flow-wrap { max-width: 1200px; margin: 0 auto; }
+
+  /* ── Shared section ── */
+  .shared-section { display: flex; flex-direction: column; align-items: center; }
+  .shared-inner { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
+
+  /* ── Split line ── */
+  .split-wrap { width: 100%; position: relative; height: 44px; display: flex; justify-content: center; margin: 2px 0; }
+  .split-line-v { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: var(--border-strong); transform: translateX(-50%); }
+  .split-line-h { position: absolute; top: 42px; left: 25%; right: 25%; height: 2px; background: var(--border-strong); }
+  .split-dot-l { position: absolute; top: 40px; left: calc(25% - 5px); width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+  .split-dot-r { position: absolute; top: 40px; right: calc(25% - 5px); width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+
+  /* ── Two columns ── */
+  .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+  .col-wrap { display: flex; flex-direction: column; align-items: center; }
+  .col-header { width: 100%; border-radius: 10px; padding: 10px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .col-header-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .col-header-title { font-size: 14.5px; font-weight: 600; }
+  .col-header-sub { font-size: 12px; margin-top: 1px; }
+
+  /* ── Flow boxes ── */
+  .fbox { width: 100%; border: 1px solid; border-radius: 8px; padding: 9px 13px; margin-bottom: 2px; }
+  .fbox-actor { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px; opacity: 0.7; }
+  .fbox-text { font-size: 12.5px; line-height: 1.55; }
+  .fbox-text strong { font-weight: 600; }
+  .fc-c { background: #f0fdf4; border-color: #86efac; color: #166534; }
+  .fc-m { background: #eff6ff; border-color: #93c5fd; color: #1e40af; }
+  .fc-s { background: #f5f3ff; border-color: #c4b5fd; color: #5b21b6; }
+
+  /* ── Connector arrows ── */
+  .arrow { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 1px 0; }
+  .arrow-line { width: 2px; background: var(--border-strong); }
+  .arrow-head { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--border-strong); }
+  .h8 { height: 8px; }
+  .h12 { height: 12px; }
+
+  /* ── Status change row ── */
+  .status-row { width: 100%; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding: 6px 10px; background: #fafaf9; border-left: 3px solid var(--border-strong); border-radius: 0 6px 6px 0; margin: 4px 0; }
+  .status-row-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-right: 2px; flex-basis: 100%; }
+
+  /* ── Status badges (ovals) ── */
+  .sbadge { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid; white-space: nowrap; line-height: 1; }
+  .sbadge-type { font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.75; }
+  /* Order statuses */
+  .o-pending    { background: #fef3c7; border-color: #fcd34d; color: #78350f; }
+  .o-confirmed  { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+  .o-cancelled  { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+  .o-done       { background: #dcfce7; border-color: #86efac; color: #166534; }
+  /* Payment statuses */
+  .p-awaiting   { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+  .p-paid       { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+  .p-refunded   { background: #ede9fe; border-color: #c4b5fd; color: #5b21b6; }
+  .p-unpaid     { background: #f1f5f9; border-color: #cbd5e1; color: #475569; }
+
+  /* ── Document actions ── */
+  .doc-row { width: 100%; display: flex; flex-direction: column; gap: 3px; margin: 4px 0; }
+  .doc-item { display: flex; gap: 6px; align-items: flex-start; font-size: 11.5px; padding: 5px 9px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 5px; }
+  .doc-tag { font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.02em; margin-top: 1px; }
+  .dt-created { background: #dcfce7; color: #166534; }
+  .dt-deleted { background: #fee2e2; color: #991b1b; }
+  .dt-reverted { background: #ede9fe; color: #5b21b6; }
+  .dt-stays   { background: #f1f5f9; color: #475569; }
+  .doc-label { color: var(--text-secondary); line-height: 1.4; }
+  .doc-label strong { color: var(--text); }
+
+  /* ── Decision diamond ── */
+  .decision { width: 100%; background: var(--bg-subtle); border: 2px solid var(--border-strong); border-radius: 8px; padding: 9px 14px; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; margin: 2px 0; }
+  .decision-icon { font-size: 13px; opacity: 0.45; }
+  .decision-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+  /* ── Branch container ── */
+  .branches { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .branch { border-left: 2px solid var(--border-strong); padding-left: 12px; display: flex; flex-direction: column; gap: 4px; }
+  .branch-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 9px; border-radius: 20px; width: fit-content; margin-bottom: 2px; }
+  .bt-confirm { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+  .bt-cancel  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  .bt-auto    { background: #fef3c7; color: #78350f; border: 1px solid #fcd34d; }
+  .bt-edge    { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+  .bt-decline { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+  /* ── Terminal states ── */
+  .terminal { padding: 7px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-align: center; width: fit-content; margin: 4px auto; }
+  .t-complete  { background: #166534; color: #fff; }
+  .t-cancelled { background: #374151; color: #f9fafb; }
+
+  /* ── Note ── */
+  .flow-note { width: 100%; font-size: 11.5px; color: var(--text-secondary); background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: 6px; padding: 7px 10px; margin-top: 4px; line-height: 1.55; }
+  .flow-note strong { color: var(--text); }
+
+  /* ── Status reference table ── */
+  .ref-table-wrap { max-width: 1200px; margin: 3rem auto 0; }
+  .ref-table-title { font-size: 16px; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .ref-table th { text-align: left; padding: 8px 12px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 2px solid var(--border-strong); background: var(--bg-subtle); }
+  .ref-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-secondary); line-height: 1.5; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr.highlight td { background: #fff9f0; }
+  .ref-table td:first-child { color: var(--text-muted); font-size: 11px; font-weight: 700; }
+  .ref-table td strong { color: var(--text); }
+
+  /* ── Divider ── */
+  .section-divider { max-width: 1200px; margin: 2.5rem auto; border: none; border-top: 1px solid var(--border); }
+
+  @media (max-width: 860px) {
+    .two-cols { grid-template-columns: 1fr; }
+    .split-line-h, .split-dot-l, .split-dot-r { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-eyebrow">Product Catalogue · Paper.id · Phase 0</div>
+  <div class="header-title">Complete process &amp; status flow</div>
+  <div class="header-sub">End-to-end order lifecycle from browse to completion — showing every order status and payment status change. Payment is captured immediately when the customer pays; the merchant then has a 30-minute window to confirm or cancel.</div>
+</div>
+
+<!-- Legend -->
+<div class="legend-wrap">
+  <div class="legend-group">
+    <div class="legend-group-title">Actors</div>
+    <div class="legend-row"><span class="legend-swatch" style="background:#86efac;"></span>Customer</div>
+    <div class="legend-row"><span class="legend-swatch" style="background:#93c5fd;"></span>Merchant</div>
+    <div class="legend-row"><span class="legend-swatch" style="background:#c4b5fd;"></span>System (Paper.id)</div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Order status</div>
+    <div class="legend-row"><span class="sbadge o-pending">Pending</span></div>
+    <div class="legend-row"><span class="sbadge o-confirmed">Confirmed</span></div>
+    <div class="legend-row"><span class="sbadge o-cancelled">Cancelled</span></div>
+    <div class="legend-row"><span class="sbadge o-done">Done</span></div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Payment status</div>
+    <div class="legend-row"><span class="sbadge p-awaiting">Awaiting Payment</span></div>
+    <div class="legend-row"><span class="sbadge p-paid">Paid</span></div>
+    <div class="legend-row"><span class="sbadge p-refunded">Refunded</span></div>
+    <div class="legend-row"><span class="sbadge p-unpaid">Unpaid</span></div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Document actions</div>
+    <div class="legend-row"><span class="doc-tag dt-created">Created</span> SI or PayIn record created</div>
+    <div class="legend-row"><span class="doc-tag dt-deleted">Deleted</span> Record deleted (funds never settled)</div>
+    <div class="legend-row"><span class="doc-tag dt-stays">Stays</span> Record unchanged</div>
+    <div class="legend-row"><span class="doc-tag dt-reverted">Reverted</span> Status changes to Unpaid</div>
+  </div>
+</div>
+
+<!-- Flow -->
+<div class="flow-wrap">
+
+  <!-- SHARED TOP -->
+  <div class="shared-section">
+    <div class="shared-inner">
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer</div>
+        <div class="fbox-text">Opens storefront URL (shared via WhatsApp or any channel). No login required to browse.</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer</div>
+        <div class="fbox-text">Browses catalogue, adds products to cart, reviews order summary</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer · OTP verification</div>
+        <div class="fbox-text">Enters <strong>name + phone number</strong> → receives OTP via WhatsApp (SMS fallback) → verifies identity</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer</div>
+        <div class="fbox-text">Fills shipping address, delivery notes — then arrives at <strong>payment method selection</strong></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="status-row">
+        <div class="status-row-label">Status at this point</div>
+        <span class="sbadge o-pending"><span class="sbadge-type">Order</span> Pending</span>
+        <span class="sbadge p-awaiting"><span class="sbadge-type">Payment</span> Awaiting Payment</span>
+      </div>
+      <div class="flow-note">No expiry at this step — the customer can take as long as they need to choose a payment method.</div>
+
+    </div>
+  </div>
+
+  <!-- SPLIT -->
+  <div class="split-wrap">
+    <div class="split-line-v"></div>
+    <div class="split-line-h"></div>
+    <div class="split-dot-l"></div>
+    <div class="split-dot-r"></div>
+  </div>
+
+  <!-- TWO COLUMNS -->
+  <div class="two-cols">
+
+    <!-- ═══════════ CC COLUMN ═══════════ -->
+    <div class="col-wrap">
+      <div class="col-header" style="background:#eff6ff; border:1px solid #bfdbfe;">
+        <span class="col-header-badge" style="background:#dbeafe; color:#1d4ed8;">Credit Card</span>
+        <div>
+          <div class="col-header-title" style="color:#1e40af;">Charge captured immediately</div>
+          <div class="col-header-sub" style="color:#3b82f6;">Payment taken at checkout — 30-min merchant window follows</div>
+        </div>
+      </div>
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer</div>
+        <div class="fbox-text">Enters card details and submits payment. CC charge <strong>captured immediately</strong> at checkout.</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="status-row">
+        <div class="status-row-label">Status changes to</div>
+        <span class="sbadge o-pending"><span class="sbadge-type">Order</span> Pending</span>
+        <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+      </div>
+      <div class="doc-row">
+        <div class="doc-item"><span class="doc-tag dt-created">Created</span><span class="doc-label"><strong>Sales Invoice</strong> — status: Paid</span></div>
+        <div class="doc-item"><span class="doc-tag dt-created">Created</span><span class="doc-label"><strong>PaperPay In</strong> — on record</span></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h12"></div><div class="arrow-head"></div></div>
+
+      <div class="fbox fc-s">
+        <div class="fbox-actor">System · Paper.id</div>
+        <div class="fbox-text">Merchant receives in-app + WhatsApp notification: new paid order ready for review</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="decision">
+        <span class="decision-icon">◇</span>
+        <div><div>Merchant reviews order</div><div class="decision-sub">30-minute window from payment — no auto-confirm</div></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="branches">
+
+        <!-- CC: CONFIRM -->
+        <div class="branch">
+          <div class="branch-tag bt-confirm">✓ Confirm</div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-confirmed"><span class="sbadge-type">Order</span> Confirmed</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>Sales Invoice</strong> — stays Paid</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays on record</span></div>
+          </div>
+          <div class="fbox fc-m" style="margin-top:4px;">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Fulfils order. When delivered, marks order as Done.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Final status</div>
+            <span class="sbadge o-done"><span class="sbadge-type">Order</span> Done</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+          </div>
+          <div class="terminal t-complete">✓ Order complete</div>
+        </div>
+
+        <!-- CC: AUTO-CANCEL -->
+        <div class="branch">
+          <div class="branch-tag bt-auto">⏱ 30 min — no action</div>
+          <div class="fbox fc-s">
+            <div class="fbox-actor">System · Paper.id (auto)</div>
+            <div class="fbox-text">30 minutes elapsed with no merchant action. System <strong>auto-cancels and refunds in full</strong> via the payment gateway.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-refunded"><span class="sbadge-type">Payment</span> Refunded</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>Sales Invoice</strong> — deleted</span></div>
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>PaperPay In</strong> — deleted</span></div>
+          </div>
+          <div class="fbox fc-c" style="margin-top:4px;">
+            <div class="fbox-actor">Customer</div>
+            <div class="fbox-text">Notified via WhatsApp: order timed out, full refund in progress.</div>
+          </div>
+          <div class="terminal t-cancelled">Order auto-cancelled &amp; refunded</div>
+        </div>
+
+        <!-- CC: DECLINE before payment -->
+        <div class="branch">
+          <div class="branch-tag bt-decline">✕ Decline (before customer pays)</div>
+          <div class="fbox fc-m">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Merchant declines the order before the customer has entered card details. <strong>No charge has been made.</strong></div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-unpaid"><span class="sbadge-type">Payment</span> Unpaid</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Never created</span><span class="doc-label"><strong>SI &amp; PayIn</strong> — nothing to reverse</span></div>
+          </div>
+          <div class="terminal t-cancelled">Order cancelled — no charge</div>
+        </div>
+
+        <!-- CC: CANCEL before settlement -->
+        <div class="branch">
+          <div class="branch-tag bt-cancel">✕ Cancel (before CC settlement)</div>
+          <div class="fbox fc-m">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Merchant cancels a paid order <strong>before funds settle into Active Balance</strong>. Instant gateway reversal possible.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-refunded"><span class="sbadge-type">Payment</span> Refunded</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>Sales Invoice</strong> — deleted (funds never settled)</span></div>
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>PaperPay In</strong> — deleted</span></div>
+          </div>
+          <div class="terminal t-cancelled">Order cancelled — instant refund</div>
+        </div>
+
+        <!-- CC: CANCEL after settlement -->
+        <div class="branch">
+          <div class="branch-tag bt-edge">⚠ Cancel (after CC settlement)</div>
+          <div class="fbox fc-m">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Merchant cancels after funds have <strong>already settled into Active Balance</strong>. Cannot be automatically reversed.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Immediate status</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid (unchanged)</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>Sales Invoice</strong> — stays Paid (funds landed)</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays on record</span></div>
+          </div>
+          <div class="fbox fc-s" style="margin-top:4px;">
+            <div class="fbox-actor">System · Paper.id ops</div>
+            <div class="fbox-text">Ops team processes manual refund to customer. Merchant then marks order "Refunded" in the dashboard.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">After manual refund marked</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-refunded"><span class="sbadge-type">Payment</span> Refunded</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-reverted">Reverted</span><span class="doc-label"><strong>Sales Invoice</strong> — reverts to Unpaid</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays (money arrived + left separately)</span></div>
+          </div>
+          <div class="terminal t-cancelled">Order cancelled — manual refund</div>
+        </div>
+
+      </div><!-- /branches CC -->
+    </div><!-- /CC col -->
+
+    <!-- ═══════════ VA COLUMN ═══════════ -->
+    <div class="col-wrap">
+      <div class="col-header" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+        <span class="col-header-badge" style="background:#dcfce7; color:#15803d;">Virtual Account</span>
+        <div>
+          <div class="col-header-title" style="color:#15803d;">Transfer captured immediately</div>
+          <div class="col-header-sub" style="color:#16a34a;">Funds instant to balance — 30-min merchant window follows</div>
+        </div>
+      </div>
+
+      <div class="fbox fc-c">
+        <div class="fbox-actor">Customer</div>
+        <div class="fbox-text">Receives dynamic VA number with transfer instructions. Customer initiates bank transfer.</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="decision">
+        <span class="decision-icon">◇</span>
+        <div><div>Does the customer transfer?</div><div class="decision-sub">Merchant can decline before any transfer is made</div></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="branches" style="margin-bottom:10px;">
+        <!-- VA: DECLINE before transfer -->
+        <div class="branch">
+          <div class="branch-tag bt-decline">✕ Merchant declines (before transfer)</div>
+          <div class="fbox fc-m">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Merchant declines before the customer has transferred. <strong>No funds have moved.</strong></div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-unpaid"><span class="sbadge-type">Payment</span> Unpaid</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Never created</span><span class="doc-label"><strong>SI &amp; PayIn</strong> — nothing to reverse</span></div>
+          </div>
+          <div class="terminal t-cancelled">Order cancelled — no transfer</div>
+        </div>
+      </div>
+
+      <!-- VA: Transfer received -->
+      <div class="fbox fc-s">
+        <div class="fbox-actor">System · Bank / Payment Gateway</div>
+        <div class="fbox-text">VA transfer received. Funds settle <strong>instantly</strong> into Active Balance — no pending period.</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="status-row">
+        <div class="status-row-label">Status changes to</div>
+        <span class="sbadge o-pending"><span class="sbadge-type">Order</span> Pending</span>
+        <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+      </div>
+      <div class="doc-row">
+        <div class="doc-item"><span class="doc-tag dt-created">Created</span><span class="doc-label"><strong>Sales Invoice</strong> — status: Paid</span></div>
+        <div class="doc-item"><span class="doc-tag dt-created">Created</span><span class="doc-label"><strong>PaperPay In</strong> — on record</span></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h12"></div><div class="arrow-head"></div></div>
+
+      <div class="fbox fc-s">
+        <div class="fbox-actor">System · Paper.id</div>
+        <div class="fbox-text">Merchant receives in-app + WhatsApp notification: new paid order ready for review</div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="decision">
+        <span class="decision-icon">◇</span>
+        <div><div>Merchant reviews order</div><div class="decision-sub">30-minute window from transfer — no auto-confirm</div></div>
+      </div>
+      <div class="arrow"><div class="arrow-line h8"></div><div class="arrow-head"></div></div>
+
+      <div class="branches">
+
+        <!-- VA: CONFIRM -->
+        <div class="branch">
+          <div class="branch-tag bt-confirm">✓ Confirm</div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-confirmed"><span class="sbadge-type">Order</span> Confirmed</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>Sales Invoice</strong> — stays Paid</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays on record</span></div>
+          </div>
+          <div class="fbox fc-m" style="margin-top:4px;">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Fulfils order. When delivered, marks order as Done.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Final status</div>
+            <span class="sbadge o-done"><span class="sbadge-type">Order</span> Done</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid</span>
+          </div>
+          <div class="terminal t-complete">✓ Order complete</div>
+        </div>
+
+        <!-- VA: AUTO-CANCEL -->
+        <div class="branch">
+          <div class="branch-tag bt-auto">⏱ 30 min — no action</div>
+          <div class="fbox fc-s">
+            <div class="fbox-actor">System · Paper.id (auto)</div>
+            <div class="fbox-text">30 minutes elapsed with no merchant action. System <strong>auto-cancels and refunds in full</strong>.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Status changes to</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-refunded"><span class="sbadge-type">Payment</span> Refunded</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>Sales Invoice</strong> — deleted</span></div>
+            <div class="doc-item"><span class="doc-tag dt-deleted">Deleted</span><span class="doc-label"><strong>PaperPay In</strong> — deleted</span></div>
+          </div>
+          <div class="fbox fc-c" style="margin-top:4px;">
+            <div class="fbox-actor">Customer</div>
+            <div class="fbox-text">Notified via WhatsApp: order timed out, full refund in progress.</div>
+          </div>
+          <div class="terminal t-cancelled">Order auto-cancelled &amp; refunded</div>
+        </div>
+
+        <!-- VA: CANCEL after transfer (always post-settlement) -->
+        <div class="branch">
+          <div class="branch-tag bt-edge">⚠ Cancel (after transfer — always post-settlement)</div>
+          <div class="fbox fc-m">
+            <div class="fbox-actor">Merchant</div>
+            <div class="fbox-text">Merchant cancels after the VA transfer has been received. VA funds are <strong>always instant to balance</strong> — automatic reversal is never possible.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">Immediate status</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-paid"><span class="sbadge-type">Payment</span> Paid (unchanged)</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>Sales Invoice</strong> — stays Paid (funds landed)</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays on record</span></div>
+          </div>
+          <div class="fbox fc-s" style="margin-top:4px;">
+            <div class="fbox-actor">System · Paper.id ops</div>
+            <div class="fbox-text">Ops team processes manual refund to customer. Merchant then marks order "Refunded" in the dashboard.</div>
+          </div>
+          <div class="status-row">
+            <div class="status-row-label">After manual refund marked</div>
+            <span class="sbadge o-cancelled"><span class="sbadge-type">Order</span> Cancelled</span>
+            <span class="sbadge p-refunded"><span class="sbadge-type">Payment</span> Refunded</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-item"><span class="doc-tag dt-reverted">Reverted</span><span class="doc-label"><strong>Sales Invoice</strong> — reverts to Unpaid</span></div>
+            <div class="doc-item"><span class="doc-tag dt-stays">Stays</span><span class="doc-label"><strong>PaperPay In</strong> — stays (money arrived + left separately)</span></div>
+          </div>
+          <div class="terminal t-cancelled">Order cancelled — manual refund</div>
+        </div>
+
+      </div><!-- /branches VA -->
+    </div><!-- /VA col -->
+
+  </div><!-- /two-cols -->
+</div><!-- /flow-wrap -->
+
+<hr class="section-divider">
+
+<!-- Status reference table -->
+<div class="ref-table-wrap">
+  <div class="ref-table-title">📋 Order &amp; payment status reference</div>
+  <p style="font-size:13px; color:var(--text-secondary); margin-bottom:1.25rem; max-width:900px; line-height:1.6;">Every event in the order lifecycle, showing what happens to Order Status, Payment Status, the Sales Invoice, and PaperPay In. Rows 4 and 6a are highlighted — these are the cases where SI and PayIn are deleted outright because funds never settled with the merchant.</p>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Event / trigger</th>
+        <th>Order status</th>
+        <th>Payment status</th>
+        <th>Sales invoice</th>
+        <th>PaperPay In</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Customer is on the "choose payment method" page</td>
+        <td><span class="sbadge o-pending">Pending</span></td>
+        <td><span class="sbadge p-awaiting">Awaiting Payment</span></td>
+        <td style="color:var(--text-muted);">Not yet created</td>
+        <td style="color:var(--text-muted);">Not yet created</td>
+        <td>No expiry — customer can take as long as needed.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Payment completes (CC charged or VA transferred)</td>
+        <td><span class="sbadge o-pending">Pending</span></td>
+        <td><span class="sbadge p-paid">Paid</span></td>
+        <td><strong>Created</strong> — Paid</td>
+        <td><strong>Created</strong></td>
+        <td>The 30-minute confirm clock starts now — not at order submission.</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Merchant confirms within 30 min</td>
+        <td><span class="sbadge o-confirmed">Confirmed</span></td>
+        <td><span class="sbadge p-paid">Paid</span></td>
+        <td>Stays Paid</td>
+        <td>Stays on record</td>
+        <td>No auto-confirm — only on explicit merchant action.</td>
+      </tr>
+      <tr class="highlight">
+        <td>4</td>
+        <td>30 minutes pass with no merchant action</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span> (auto)</td>
+        <td><span class="sbadge p-refunded">Refunded</span></td>
+        <td><strong style="color:#dc2626;">Deleted</strong></td>
+        <td><strong style="color:#dc2626;">Deleted</strong></td>
+        <td>System auto-cancels and refunds in full — same outcome for CC and VA.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Merchant declines before the customer has paid</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span></td>
+        <td><span class="sbadge p-unpaid">Unpaid</span></td>
+        <td style="color:var(--text-muted);">Never created</td>
+        <td style="color:var(--text-muted);">Never created</td>
+        <td>Nothing was charged, so nothing to refund.</td>
+      </tr>
+      <tr class="highlight">
+        <td>6a</td>
+        <td>Merchant cancels a paid <strong>CC</strong> order — before settlement (funds not yet in Active Balance)</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span></td>
+        <td><span class="sbadge p-refunded">Refunded</span></td>
+        <td><strong style="color:#dc2626;">Deleted</strong></td>
+        <td><strong style="color:#dc2626;">Deleted</strong></td>
+        <td>Instant gateway refund — no manual step.</td>
+      </tr>
+      <tr>
+        <td>6b</td>
+        <td>Merchant cancels a paid <strong>CC</strong> order — after settlement into Active Balance</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span></td>
+        <td><span class="sbadge p-paid">Paid</span> (unchanged)</td>
+        <td>Stays Paid</td>
+        <td>Stays on record</td>
+        <td>Behaves exactly like a VA cancellation (row 7) — settled charge can't be reversed automatically.</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Merchant cancels a paid <strong>VA</strong> order</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span></td>
+        <td><span class="sbadge p-paid">Paid</span> (unchanged)</td>
+        <td>Stays Paid</td>
+        <td>Stays on record</td>
+        <td>VA funds are instant to balance — always row 7, never row 6a.</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Merchant marks a cancelled order "Refunded" after completing manual refund (rows 6b and 7)</td>
+        <td><span class="sbadge o-cancelled">Cancelled</span></td>
+        <td><span class="sbadge p-refunded">Refunded</span></td>
+        <td>Reverts to <strong>Unpaid</strong></td>
+        <td>Unchanged — stays on record</td>
+        <td>Not deleted — money genuinely arrived and left via a separate manual refund, so it stays for the books.</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Merchant marks a Confirmed order delivered</td>
+        <td><span class="sbadge o-done">Done</span></td>
+        <td><span class="sbadge p-paid">Paid</span></td>
+        <td>Stays Paid</td>
+        <td>Stays on record</td>
+        <td>Terminal status, set manually — no further changes expected.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
