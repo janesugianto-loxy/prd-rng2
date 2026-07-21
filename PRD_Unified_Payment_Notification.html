@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Unified Payment Notification: Email, Bell &amp; Push · Paper.id</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f8f8f7;
+    --bg-muted: #f1f0ed;
+    --text: #1a1a18;
+    --text-secondary: #5c5c57;
+    --text-muted: #9c9b96;
+    --border: #e8e7e3;
+    --border-strong: #d4d3ce;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-text: #1d4ed8;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --green-text: #15803d;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+    --amber-text: #b45309;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --red-text: #b91c1c;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --purple-text: #6d28d9;
+    --nav-w: 240px;
+    --content-max: 780px;
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    background: var(--bg-subtle);
+    padding: 1.5rem 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 3rem 4rem 6rem;
+  }
+  .content { max-width: var(--content-max); margin: 0 auto; }
+
+  /* ── Sidebar nav ── */
+  .nav-brand {
+    padding: 0 1.25rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .nav-logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-text);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .nav-doc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.25rem 0.25rem;
+  }
+  .nav-link {
+    display: block;
+    padding: 0.35rem 1.25rem;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--bg-muted); }
+  .nav-link.active { color: var(--accent-text); border-left-color: var(--accent); background: var(--accent-bg); }
+  .nav-link.sub { padding-left: 2rem; font-size: 12px; }
+  .nav-link .badge {
+    float: right;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--bg-muted);
+    color: var(--text-muted);
+  }
+  .nav-link.new .badge { background: var(--red-bg); color: var(--red-text); }
+
+  /* ── Header ── */
+  .doc-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  .phase-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .doc-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  .doc-subtitle { font-size: 17px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 13px; color: var(--text-secondary); }
+  .meta-item { display: flex; align-items: center; gap: 6px; }
+  .meta-label { color: var(--text-muted); }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  h2.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  p { margin-bottom: 1rem; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Callout / Bet ── */
+  .callout-bet {
+    background: var(--text);
+    color: #f5f5f4;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .callout-bet p { color: #d4d3ce; margin-bottom: 0.85rem; }
+  .callout-bet p:last-child { margin-bottom: 0; }
+  .callout-bet strong { color: #ffffff; }
+
+  /* ── Problem bullets ── */
+  .problem-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .problem-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .problem-list li strong { color: var(--text); display: block; font-size: 13.5px; margin-bottom: 2px; }
+  .problem-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── Personas ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .persona-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    background: var(--bg);
+  }
+  .persona-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .persona-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .persona-card p { font-size: 13px; color: var(--text-secondary); }
+
+  /* ── Flows ── */
+  .flow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .flow-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .flow-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flow-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.03em;
+  }
+  .flow-card h4 { font-size: 14px; font-weight: 600; }
+  .flow-card p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .flow-steps { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+  .flow-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .step-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-connector { flex: 1; }
+
+  /* ── Not building ── */
+  .not-building { display: flex; flex-direction: column; gap: 8px; }
+  .not-building-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .not-building-item .x { color: var(--text-muted); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+  .not-building-item strong { color: var(--text); }
+
+  /* ── North star ── */
+  .north-star {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .north-star .ns-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #0284c7; margin-bottom: 0.5rem; }
+  .north-star .ns-metric { font-size: 18px; font-weight: 600; color: #0c4a6e; line-height: 1.4; }
+  .north-star .ns-sub { font-size: 13px; color: #0369a1; margin-top: 0.75rem; }
+
+  /* ── Metrics ── */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .metric-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: var(--bg);
+  }
+  .metric-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .metric-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .metric-phase {
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+  }
+
+  /* ── Release strategy ── */
+  .release-phases { display: flex; flex-direction: column; gap: 0; }
+  .release-phase {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    border-radius: 0;
+    margin-top: -1px;
+  }
+  .release-phase:first-child { border-radius: var(--radius) var(--radius) 0 0; margin-top: 0; }
+  .release-phase:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .release-phase-label {
+    padding: 1rem;
+    background: var(--bg-subtle);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .release-phase-num { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+  .release-phase-name { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .release-type-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .release-phase-content { padding: 1rem 1.25rem; }
+  .release-phase-content h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+  .release-phase-content ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .release-phase-content li { font-size: 12.5px; color: var(--text-secondary); padding-left: 12px; position: relative; }
+  .release-phase-content li::before { content: "·"; position: absolute; left: 0; color: var(--text-muted); }
+
+  /* ── Requirements ── */
+  .req-group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .req-group-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .ticket {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .ticket-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .ticket-header:hover { background: var(--bg-muted); }
+  .ticket-id {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .ticket-title { font-size: 14.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .ticket-chevron {
+    color: var(--text-muted);
+    font-size: 16px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .ticket.open .ticket-chevron { transform: rotate(180deg); }
+  .new-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--red-bg);
+    color: var(--red-text);
+    border: 1px solid #fecaca;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .ticket-body {
+    display: none;
+    padding: 1.25rem;
+  }
+  .ticket.open .ticket-body { display: block; }
+
+  .user-story {
+    background: var(--accent-bg);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 13.5px;
+  }
+  .user-story strong { display: block; font-size: 11px; font-weight: 600; color: var(--accent-text); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .user-story p { color: #1e3a5f; margin: 0; line-height: 1.55; }
+
+  .ticket-meta { display: flex; gap: 1.5rem; margin-bottom: 1.25rem; font-size: 13px; }
+  .ticket-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .ticket-meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  .ticket-meta-value { color: var(--text-secondary); }
+
+  .context-box {
+    background: var(--amber-bg);
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #78350f;
+    margin-bottom: 1.25rem;
+  }
+  .context-box strong { color: #92400e; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+
+  .ac-group { margin-bottom: 1rem; }
+  .ac-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .ac-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .ac-list li {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    line-height: 1.5;
+  }
+  .ac-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 10px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ac-list li strong { color: var(--text); }
+  .ac-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: var(--bg-muted);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+  .edge-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .edge-list li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 7px 10px 7px 30px;
+    position: relative;
+    border-radius: var(--radius-sm);
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    line-height: 1.5;
+  }
+  .edge-list li::before {
+    content: "⚠";
+    position: absolute;
+    left: 10px;
+    color: var(--amber);
+    font-size: 11px;
+  }
+  .edge-list li code {
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 12px;
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #78350f;
+  }
+
+  .clickup-row {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .clickup-input {
+    flex: 1;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: inherit;
+  }
+  .clickup-input:focus { outline: none; border-color: var(--accent); }
+
+  /* ── Assets ── */
+  .assets-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .assets-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .assets-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .assets-table tr:last-child td { border-bottom: none; }
+  .status-ref-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .status-ref-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 860px; }
+  .status-ref-table th {
+    text-align: left;
+    padding: 9px 12px;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .status-ref-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-secondary); line-height: 1.45; }
+  .status-ref-table tr:last-child td { border-bottom: none; }
+  .status-ref-table td:first-child { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .status-ref-table td strong { color: var(--text); }
+  .status-ref-table tr.sr-highlight td { background: #fffbeb; }
+  .status-chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .status-existing { background: var(--green-bg); color: var(--green-text); }
+  .status-pending { background: var(--bg-muted); color: var(--text-muted); }
+  .status-draft { background: var(--accent-bg); color: var(--accent-text); }
+
+  /* ── Out of scope ── */
+  .oos-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .oos-list li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .oos-list li::before { content: "→"; color: var(--text-muted); font-size: 13px; }
+  .scope-label {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--purple-bg);
+    color: var(--purple-text);
+  }
+
+  /* ── Scope change alert ── */
+  .scope-alert {
+    background: var(--red-bg);
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 2rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .scope-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .scope-alert h4 { font-size: 14px; font-weight: 600; color: var(--red-text); margin-bottom: 4px; }
+  .scope-alert p { font-size: 13px; color: #7f1d1d; margin: 0; }
+
+  /* ── Payment flow ── */
+  .expiry-box {
+    background: var(--amber-bg); border: 1px solid #fde68a;
+    border-radius: var(--radius); padding: 0.875rem 1rem;
+    font-size: 13px; color: #78350f; margin-top: 1rem; line-height: 1.6;
+  }
+  .expiry-box strong { color: #92400e; }
+  .payment-step {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--text-secondary);
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+  }
+  .payment-step:last-child { border-bottom: none; }
+  .payment-step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .payment-path-body { padding: 0.875rem 1.25rem; }
+
+  /* ── Role cards ── */
+  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .role-card { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .role-card-header {
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+    background: var(--bg-subtle); display: flex; align-items: center; gap: 10px;
+  }
+  .role-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+  .role-title { font-size: 15px; font-weight: 600; }
+  .role-perms { padding: 0.75rem 1.25rem; display: flex; flex-direction: column; gap: 0; }
+  .role-perm {
+    font-size: 13px; color: var(--text-secondary);
+    padding: 8px 0 8px 22px; position: relative;
+    border-bottom: 1px solid var(--border); line-height: 1.5;
+  }
+  .role-perm:last-child { border-bottom: none; }
+  .role-perm::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-size: 12px; font-weight: 600; }
+  .role-perm.no::before { content: "—"; color: var(--text-muted); }
+  .role-perm strong { color: var(--text); }
+
+  /* ── Notification rows ── */
+  .notif-section { margin-bottom: 1.5rem; }
+  .notif-section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .notif-rows { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .notif-row { display: grid; grid-template-columns: 170px 1fr 120px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .notif-row:last-child { border-bottom: none; }
+  .notif-trigger { padding: 10px 14px; background: var(--bg-subtle); border-right: 1px solid var(--border); font-weight: 500; color: var(--text); font-size: 12.5px; line-height: 1.5; }
+  .notif-message { padding: 10px 14px; color: var(--text-secondary); line-height: 1.55; font-style: italic; }
+  .notif-channels { padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; justify-content: center; border-left: 1px solid var(--border); }
+  .channel-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+  .ch-inapp { background: var(--accent-bg); color: var(--accent-text); }
+  .ch-wa { background: var(--green-bg); color: var(--green-text); }
+
+  /* ── Tax examples ── */
+  .tax-example { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .tax-example h4 { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .tax-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); padding: 4px 0; }
+  .tax-line.subtotal { border-top: 1px dotted var(--border); padding-top: 8px; margin-top: 4px; }
+  .tax-line.tax-row { color: var(--amber-text); }
+  .tax-line.grand { border-top: 2px solid var(--border-strong); padding-top: 8px; margin-top: 4px; font-weight: 700; color: var(--text); font-size: 13.5px; }
+
+  /* ── Onboarding steps ── */
+  .ob-steps { display: flex; flex-direction: column; gap: 0; }
+  .ob-step { display: grid; grid-template-columns: 48px 1fr; gap: 0; padding: 1rem 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .ob-step:last-child { border-bottom: none; }
+  .ob-step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-bg); color: var(--accent-text); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .ob-step-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .ob-step-body p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+
+  /* ── Flow diagram ── */
+  .fc-legend { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .fc-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-secondary); font-weight: 500; }
+  .fc-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .fc-shared-wrap { display: flex; justify-content: center; }
+  .fc-shared { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; width: 100%; max-width: 500px; text-align: center; }
+  .fc-shared-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.875rem; }
+  .fc-gap { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .fc-gap-line { width: 2px; background: var(--border-strong); }
+  .fc-gap-arr { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--border-strong); }
+  .fc-h10 { height: 10px; } .fc-h14 { height: 14px; }
+  .fc-split { display: flex; justify-content: center; }
+  .fc-split-inner { width: 500px; position: relative; height: 40px; }
+  .fc-split-inner::before { content: ""; position: absolute; top: 0; left: calc(50% - 1px); width: 2px; height: 40px; background: var(--border-strong); }
+  .fc-split-l { position: absolute; top: 38px; right: 50%; width: 50%; height: 2px; background: var(--border-strong); }
+  .fc-split-r { position: absolute; top: 38px; left: 50%; width: 50%; height: 2px; background: var(--border-strong); }
+  .fc-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .fc-col { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .fc-col-head { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .fc-col-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
+  .fc-col-title { font-size: 14.5px; font-weight: 600; }
+  .fc-col-sub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .fc-col-body { padding: 1.25rem; display: flex; flex-direction: column; align-items: center; }
+  .fc-col-top { display: flex; flex-direction: column; align-items: center; padding: 12px 0 4px; }
+  .fc-col-top-line { width: 2px; height: 20px; background: var(--border-strong); }
+  .fc-col-top-arr { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid var(--border-strong); }
+  .fc-box { width: 100%; border: 1px solid; border-radius: 8px; padding: 9px 13px; }
+  .fc-box-actor { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px; opacity: 0.75; }
+  .fc-box-text { font-size: 12.5px; line-height: 1.55; }
+  .fc-box.fc-c { background: #f0fdf4; border-color: #86efac; color: #166534; }
+  .fc-box.fc-m { background: var(--accent-bg); border-color: #93c5fd; color: #1e40af; }
+  .fc-box.fc-s { background: var(--purple-bg); border-color: #c4b5fd; color: #5b21b6; }
+  .fc-box.fc-e { background: var(--red-bg); border-color: #fca5a5; color: #991b1b; }
+  .fc-box.fc-w { background: var(--amber-bg); border-color: #fcd34d; color: #92400e; }
+  .fc-decision { width: 100%; background: var(--bg-subtle); border: 1.5px solid var(--border-strong); border-radius: 8px; padding: 9px 13px; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .fc-decision-icon { font-size: 14px; opacity: 0.5; }
+  .fc-branches { width: 100%; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+  .fc-branch { border-left: 2px solid var(--border-strong); padding-left: 12px; display: flex; flex-direction: column; gap: 5px; }
+  .fc-branch-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 8px; border-radius: 10px; width: fit-content; margin-bottom: 2px; }
+  .fc-tag-confirm { background: #dcfce7; color: #166534; }
+  .fc-tag-reject { background: var(--red-bg); color: #991b1b; }
+  .fc-tag-expire { background: var(--amber-bg); color: #92400e; }
+  .fc-tag-edge { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+  .fc-sub-branches { border-left: 2px dashed var(--border-strong); margin-left: 6px; padding-left: 10px; display: flex; flex-direction: column; gap: 5px; padding-top: 4px; padding-bottom: 4px; }
+  .fc-sub-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 7px; border-radius: 10px; width: fit-content; margin-bottom: 2px; }
+  .fc-sub-tag-pay { background: #dcfce7; color: #166534; }
+  .fc-sub-tag-fail { background: var(--amber-bg); color: #92400e; }
+  .fc-terminal { padding: 7px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; text-align: center; width: fit-content; margin: 0 auto; }
+  .fc-terminal.fc-ok { background: #166534; color: #fff; }
+  .fc-terminal.fc-cancelled { background: #374151; color: #f9fafb; }
+  .fc-note { font-size: 11.5px; color: var(--text-secondary); background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: 6px; padding: 7px 10px; margin-top: 4px; line-height: 1.5; }
+
+  /* ── Print / mobile ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { padding: 2rem 1.5rem 4rem; }
+    .persona-grid, .flow-grid, .metrics-grid, .role-grid { grid-template-columns: 1fr; }
+    .notif-row { grid-template-columns: 1fr; }
+    .notif-trigger { border-right: none; border-bottom: 1px solid var(--border); }
+    .notif-channels { border-left: none; flex-direction: row; }
+  }
+  @media print {
+    .sidebar { display: none; }
+    .ticket-body { display: block !important; }
+    .ticket-chevron { display: none; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar">
+    <div class="nav-brand">
+      <div class="nav-logo">Paper.id · R&amp;G</div>
+      <div class="nav-doc">Unified Payment Notification<br>PRD — Email, Bell &amp; Push</div>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <a href="#the-bet" class="nav-link">The bet</a>
+    <a href="#problem" class="nav-link">The problem</a>
+    <a href="#scope" class="nav-link">What we're building</a>
+    <a href="#channels" class="nav-link">Notification content &amp; channels</a>
+
+    <div class="nav-section-label">A. Email</div>
+    <a href="#a1" class="nav-link sub">A-1 · PayIn via Payment Link <span class="badge">Live</span></a>
+    <a href="#a2" class="nav-link sub">A-2 · PayIn Static VA <span class="badge">Live</span></a>
+    <a href="#a3" class="nav-link sub">A-3 · PayOut Success <span class="badge">Live</span></a>
+    <a href="#a4" class="nav-link sub">A-4 · PayOut Disbursement <span class="badge">Live</span></a>
+
+    <div class="nav-section-label">B. Bell / Dashboard</div>
+    <a href="#b1" class="nav-link sub">B-1 · PayIn via Payment Link <span class="badge">Live</span></a>
+    <a href="#b2" class="nav-link sub">B-2 · PayIn Static VA <span class="badge">Live</span></a>
+    <a href="#b3" class="nav-link sub">B-3 · PayOut Success <span class="badge">Live</span></a>
+    <a href="#b4" class="nav-link sub">B-4 · PayOut Disbursement <span class="badge">Live</span></a>
+
+    <div class="nav-section-label">C. Push</div>
+    <a href="#c1" class="nav-link sub new">C-1 · PayIn via Payment Link <span class="badge new">New</span></a>
+    <a href="#c2" class="nav-link sub new">C-2 · PayIn Static VA <span class="badge new">New</span></a>
+    <a href="#c3" class="nav-link sub new">C-3 · PayOut Success <span class="badge new">New</span></a>
+    <a href="#c4" class="nav-link sub new">C-4 · PayOut Disbursement <span class="badge new">New</span></a>
+
+    <div class="nav-section-label">Reference</div>
+    <a href="#assets" class="nav-link">Assets</a>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="content">
+
+      <!-- Header -->
+      <div class="doc-header">
+        <div class="phase-chip"><span class="phase-dot"></span>Multi-Channel · Standardization</div>
+        <h1 class="doc-title">Unified Payment Notification</h1>
+        <p class="doc-subtitle">One complete payment story, no matter which channel the user sees it on first — email, bell/dashboard, or push.</p>
+        <div class="meta-row">
+          <div class="meta-item"><span class="meta-label">Writer</span> Jane Radianti Sugianto</div>
+          <div class="meta-item"><span class="meta-label">Reviewers</span> Rinaldi Limeo</div>
+          <div class="meta-item"><span class="meta-label">BU</span> Payments · RNG</div>
+          <div class="meta-item"><span class="meta-label">Created</span> July 2026</div>
+        </div>
+      </div>
+
+      <!-- The Bet -->
+      <div class="section" id="the-bet">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0fdf4;">🎯</div>
+          <h2 class="section-title">The bet</h2>
+        </div>
+        <div class="callout-bet">
+          <p><strong>If every payment notification — email, bell/dashboard, and push — carries the right set of payment variables for its surface,</strong> users will be able to trust and act on the notification itself, without opening the dashboard, checking their email, or contacting support to confirm a transaction went through correctly.</p>
+          <p>Email, Bell/Dashboard, and Push are now live or shipping across all four payment modules — PayIn via Payment Link, PayIn Static VA, PayOut Success, and PayOut Disbursement — with Push still rolling out on mobile only. WhatsApp remains disabled and stays out of scope.</p>
+        </div>
+      </div>
+
+      <!-- The problem -->
+      <div class="section" id="problem">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fef2f2;">🔍</div>
+          <h2 class="section-title">The problem</h2>
+        </div>
+        <ul class="problem-list">
+          <li><span class="problem-icon">📧</span><div><strong>Email notification is incomplete</strong>The PayIn &amp; PayOut email template exists but is missing key payment variables, so users can't fully verify a payment from the email alone.</div></li>
+          <li><span class="problem-icon">🔔</span><div><strong>Bell/dashboard notification is incomplete</strong>The in-app notification for PayIn (Static VA) and PayOut is also missing variables that the transaction record already contains.</div></li>
+          <li><span class="problem-icon">📱</span><div><strong>Push notification isn't live yet</strong>Push exists on mobile only and still needs to reach the same standard as email and bell/dashboard.</div></li>
+          <li><span class="problem-icon">🤷</span><div><strong>Users fall back to the dashboard</strong>Incomplete notifications on any channel force users to log in and manually check the transaction — increasing support queries.</div></li>
+        </ul>
+      </div>
+
+      <!-- Scope -->
+      <div class="section" id="scope">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f5f3ff;">⚡</div>
+          <h2 class="section-title">What we're building</h2>
+        </div>
+        <p style="margin-bottom:1.25rem;">Three channels — Email, Bell Notification/Dashboard, and Push Notification — each carrying a variable set tailored to that surface, across four payment modules: PayIn via Payment Link, PayIn Static VA, PayOut Success (Single PI / Single PYOR / Bulk PI / Bulk PYOR), and PayOut Disbursement (Single PI / Single PYOR / Bulk PI / Bulk PYOR). Bell/Dashboard is developed for both <strong>Web and Mobile</strong>. Push is <strong>Mobile only</strong>. WhatsApp is out of scope everywhere — it's currently disabled and stays that way.</p>
+        <div class="flow-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#eff6ff; color:#1d4ed8;">Channel A</span>
+              <div>
+                <h4>Email</h4>
+                <p>Self-sufficient in the inbox</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span>PayIn via Payment Link — delivered</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span>PayIn Static VA — live</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span>PayOut Success — live</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#dbeafe; color:#1d4ed8;">✓</span><span>PayOut Disbursement — live</span></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#f5f3ff; color:#6d28d9;">Channel B</span>
+              <div>
+                <h4>Bell / Dashboard</h4>
+                <p>Web + Mobile — tappable to the transaction record</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#ede9fe; color:#6d28d9;">✓</span><span>PayIn via Payment Link — live</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#ede9fe; color:#6d28d9;">✓</span><span>PayIn Static VA — live</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#ede9fe; color:#6d28d9;">✓</span><span>PayOut Success — live</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#ede9fe; color:#6d28d9;">✓</span><span>PayOut Disbursement — live</span></div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-badge" style="background:#fffbeb; color:#b45309;">Channel C</span>
+              <div>
+                <h4>Push</h4>
+                <p>Mobile only — not yet live</p>
+              </div>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step"><span class="step-num" style="background:#fffbeb; color:#b45309;">1</span><span>PayIn via Payment Link</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#fffbeb; color:#b45309;">2</span><span>PayIn Static VA</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#fffbeb; color:#b45309;">3</span><span>PayOut Success</span></div>
+              <div class="flow-step"><span class="step-num" style="background:#fffbeb; color:#b45309;">4</span><span>PayOut Disbursement</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification content & channels -->
+      <div class="section" id="channels">
+        <div class="section-header">
+          <div class="section-icon" style="background:#f0f9ff;">🔀</div>
+          <h2 class="section-title">Notification content &amp; channels</h2>
+        </div>
+        <p>Which module is covered on which channel, at a glance. Actual copy and layout are defined in the Figma Hi-Fi design, not detailed here.</p>
+        <div class="status-ref-wrap">
+          <table class="status-ref-table">
+            <tr>
+              <th>Module</th>
+              <th>Trigger</th>
+              <th>Email</th>
+              <th>Bell / Dashboard</th>
+              <th>Push</th>
+            </tr>
+            <tr>
+              <td><strong>PayIn via Payment Link</strong></td>
+              <td>Customer successfully pays an invoice via Payment Link</td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-pending">New</span></td>
+            </tr>
+            <tr>
+              <td><strong>PayIn Static VA</strong></td>
+              <td>Bank callback confirms Static VA payment received</td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-pending">New</span></td>
+            </tr>
+            <tr>
+              <td><strong>PayOut Success</strong><br><span style="font-size:11.5px; color:var(--text-muted);">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></td>
+              <td>PayOut transaction successfully submitted/processed</td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-pending">New</span></td>
+            </tr>
+            <tr>
+              <td><strong>PayOut Disbursement</strong><br><span style="font-size:11.5px; color:var(--text-muted);">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></td>
+              <td>Disbursement/settlement confirmed to supplier's bank account</td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-existing">Live</span></td>
+              <td><span class="status-chip status-pending">New</span></td>
+            </tr>
+          </table>
+        </div>
+        <p class="footnote" style="font-size:12px; color:var(--text-muted); margin-top:10px;">Bell/Dashboard notifications run on both Web and Mobile. Push notifications are Mobile only.</p>
+      </div>
+
+      <!-- ═══ A. Email ═══ -->
+      <div class="section" id="email-group">
+        <div class="req-group-header">
+          <span class="req-group-label">A. Email notification</span>
+          <span style="font-size:12px; color:var(--text-muted);">4 modules · all Live</span>
+        </div>
+        <div class="context-box" style="margin-bottom:1.5rem;">
+          <strong>Applies to every ticket in this group</strong>
+          Email must render correctly on Gmail (web and mobile), Outlook, and mobile clients (iOS Mail, Android Gmail) with no broken layout, missing variables, or encoding issues, and must match the approved Hi-Fi design exactly. No changes are made to the WhatsApp template (currently disabled). Template switchover must not break in-flight notifications.
+        </div>
+
+        <!-- A-1 -->
+        <div class="ticket" id="a1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-1</span>
+            <span class="ticket-title">PayIn via Payment Link</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Payment Link, I want a complete email notification with a quick way to jump into the dashboard, so I have full payment information without needing to search for the transaction myself.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Customer successfully pays an invoice via Payment Link</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">CTA button</span><span class="ticket-meta-value">"View Transaction" → Paper Dashboard → PayIn Transaction History</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Live variables</div>
+              <ul class="ac-list">
+                <li>Recipient / user name</li>
+                <li>Customer name (payer)</li>
+                <li>Customer telephone number</li>
+                <li>Invoice number</li>
+                <li>Payment amount</li>
+                <li>Payment date &amp; time</li>
+                <li>Payment method used</li>
+                <li>Transaction / reference ID</li>
+                <li>Button — navigates to Paper PayIn Transaction History on the dashboard</li>
+              </ul>
+            </div>
+            <div class="context-box">
+              <strong>Why it's here</strong>
+              Included as the baseline the other three modules are being brought up to, and stays in regression scope for this sprint's testing.
+            </div>
+          </div>
+        </div>
+
+        <!-- A-2 -->
+        <div class="ticket open" id="a2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-2</span>
+            <span class="ticket-title">PayIn — Static VA</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Static VA, I want a complete email notification with a quick way to jump into the reconciliation dashboard, so that I have full payment information without needing to log in and search for it.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Bank callback confirms Static VA payment received</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">CTA button</span><span class="ticket-meta-value">"View Transaction" → Paper PayIn Reconciliation Dashboard</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">1 · Variable gap analysis</div>
+              <ul class="ac-list">
+                <li>Document variables currently in the email template, variables missing, and the final agreed list to include</li>
+              </ul>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">2 · Required variables</div>
+              <ul class="ac-list">
+                <li>Recipient / user name</li>
+                <li>Customer name (payer)</li>
+                <li>Customer telephone number</li>
+                <li>Payment amount</li>
+                <li>Payment date &amp; time</li>
+                <li>Payment method used</li>
+                <li>Transaction / reference ID</li>
+                <li>Button — navigates to Paper PayIn Reconciliation Dashboard</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">Invoice number is not included in this notification. No edge cases apply to this module.</p>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-3 -->
+        <div class="ticket" id="a3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-3</span>
+            <span class="ticket-title">PayOut Success</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user paying my supplier, I want a complete email notification with a quick way to jump into my PayOut transactions, so that I have full payment information without needing to log into the dashboard to verify.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">PayOut transaction successfully submitted/processed</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">CTA button</span><span class="ticket-meta-value">"View Transaction" → Paper PayOut Transaction List</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Sender / user name</li>
+                <li>Supplier name (recipient)</li>
+                <li>Invoice number(s)</li>
+                <li>PayOut amount</li>
+                <li>PayOut date &amp; time</li>
+                <li>Payment method</li>
+                <li>Transaction / reference ID</li>
+                <li>Button — navigates to Paper PayOut Transaction List</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">PayOut type (Single PI / Single PYOR / Bulk PI / Bulk PYOR) is tracked in the backend only and is not shown in the email.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases</div>
+              <ul class="edge-list">
+                <li>Bulk PI / Bulk PYOR → invoice number is not available; field is omitted for these sub-types</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- A-4 -->
+        <div class="ticket" id="a4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#eff6ff; color:#1d4ed8;">A-4</span>
+            <span class="ticket-title">PayOut Disbursement</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user, I want a complete email notification with a quick way to jump into my disbursements once money has settled to my supplier's bank account, so that I can confirm it without opening the dashboard first.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Disbursement/settlement confirmed to supplier's bank account</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">CTA button</span><span class="ticket-meta-value">"View Disbursement" → Paper PayOut Disbursement List</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Sender / user name</li>
+                <li>Supplier name (recipient)</li>
+                <li>Supplier bank account name</li>
+                <li>Supplier bank account number (masked)</li>
+                <li>Supplier bank name</li>
+                <li>Invoice number(s)</li>
+                <li>Disbursement amount</li>
+                <li>Disbursement date &amp; time</li>
+                <li>Transaction / reference ID</li>
+                <li>Button — navigates to Paper PayOut Disbursement List</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">Disbursement type (Single PI / Single PYOR / Bulk PI / Bulk PYOR) is tracked in the backend only and is not shown in the email.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases</div>
+              <ul class="edge-list">
+                <li>Bulk PI / Bulk PYOR → invoice number is not available; field is omitted for these sub-types</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ B. Bell / Dashboard ═══ -->
+      <div class="section" id="bell-group">
+        <div class="req-group-header">
+          <span class="req-group-label">B. Bell / Dashboard notification</span>
+          <span style="font-size:12px; color:var(--text-muted);">4 modules · all Live · Web + Mobile</span>
+        </div>
+        <div class="context-box" style="margin-bottom:1.5rem;">
+          <strong>Applies to every ticket in this group</strong>
+          Developed for both Web and Mobile. All four modules appear together in the bell panel, sorted newest first. No changes are made to email or WhatsApp templates. Template switchover must not break in-flight notifications.
+        </div>
+
+        <!-- B-1 -->
+        <div class="ticket" id="b1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f5f3ff; color:#6d28d9;">B-1</span>
+            <span class="ticket-title">PayIn via Payment Link</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Payment Link, I want the bell/dashboard notification to show the key payment details, so I can recognize the transaction at a glance.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Customer successfully pays an invoice via Payment Link</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Web + Mobile</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Paper PayIn Transaction List</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Live variables</div>
+              <ul class="ac-list">
+                <li>Customer name (payer)</li>
+                <li>Invoice number</li>
+                <li>Payment amount</li>
+                <li>Payment date &amp; time</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, payment method, and transaction/reference ID are not shown in this notification.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- B-2 -->
+        <div class="ticket" id="b2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f5f3ff; color:#6d28d9;">B-2</span>
+            <span class="ticket-title">PayIn — Static VA</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Static VA, I want to see the key payment details directly in my bell/dashboard notification, so I can recognize the transaction at a glance.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Bank callback confirms Static VA payment received</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Web + Mobile</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Paper PayIn Reconciliation Dashboard</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Customer name (payer)</li>
+                <li>Invoice number</li>
+                <li>Payment amount</li>
+                <li>Payment date &amp; time</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, payment method, and transaction/reference ID are not shown in this notification.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases</div>
+              <ul class="edge-list">
+                <li>Customer name not available → fallback label (e.g. <code>"Pelanggan"</code>)</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-3 -->
+        <div class="ticket" id="b3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f5f3ff; color:#6d28d9;">B-3</span>
+            <span class="ticket-title">PayOut Success</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user paying my supplier, I want to see the key PayOut details directly in my bell/dashboard notification, so I can recognize the transaction at a glance.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">PayOut transaction successfully submitted/processed</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Web + Mobile</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Transaction purchase receipt (that transaction)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>PayOut amount</li>
+                <li>PayOut date &amp; time</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, supplier name, invoice number, payment method, and transaction/reference ID are not shown. PayOut type is tracked in the backend only, not shown in the bell notification.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases <span class="status-chip status-pending" style="margin-left:6px;">Not live yet</span></div>
+              <ul class="edge-list">
+                <li>Bulk PI / Bulk PYOR with many invoices → summarized count shown (e.g. <code>"3 invoices"</code>); full list on the purchase receipt</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- B-4 -->
+        <div class="ticket" id="b4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#f5f3ff; color:#6d28d9;">B-4</span>
+            <span class="ticket-title">PayOut Disbursement</span>
+            <span class="status-chip status-existing">Live</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user, I want to be notified with the key details once money has settled to my supplier's bank account, so I can recognize the disbursement at a glance.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Disbursement/settlement confirmed to supplier's bank account</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Web + Mobile</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">Live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Transaction purchase receipt (that transaction)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Supplier bank account name</li>
+                <li>Supplier bank account number (masked)</li>
+                <li>Supplier bank name</li>
+                <li>Disbursement amount</li>
+                <li>Disbursement date &amp; time</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, supplier name, invoice number, and transaction/reference ID are not shown. Disbursement type is tracked in the backend only, not shown in the bell notification.</p>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Edge cases <span class="status-chip status-pending" style="margin-left:6px;">Not live yet</span></div>
+              <ul class="edge-list">
+                <li>Bulk PI / Bulk PYOR with many invoices → summarized count shown; full list on the purchase receipt</li>
+              </ul>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ C. Push ═══ -->
+      <div class="section" id="push-group">
+        <div class="req-group-header">
+          <span class="req-group-label">C. Push notification</span>
+          <span style="font-size:12px; color:var(--text-muted);">4 modules · not yet live · Mobile only</span>
+        </div>
+        <div class="context-box" style="margin-bottom:1.5rem;">
+          <strong>Applies to every ticket in this group</strong>
+          Mobile only — push is not available on web. Tapping the notification opens the app directly to the linked page. No changes are made to email or WhatsApp templates. Template switchover must not break in-flight notifications.
+        </div>
+
+        <!-- C-1 -->
+        <div class="ticket" id="c1">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#fffbeb; color:#b45309;">C-1</span>
+            <span class="ticket-title">PayIn via Payment Link</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Payment Link, I want a push notification with the key payment details, so I can recognize the transaction at a glance on my phone.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Customer successfully pays an invoice via Payment Link</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Mobile only</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">New — not yet live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Paper PayIn Transaction List</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Customer name (payer)</li>
+                <li>Payment amount</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, invoice number, payment date &amp; time, payment method, and transaction/reference ID are not shown in this notification.</p>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- C-2 -->
+        <div class="ticket" id="c2">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#fffbeb; color:#b45309;">C-2</span>
+            <span class="ticket-title">PayIn — Static VA</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user receiving money from my customer via Static VA, I want a push notification with the key payment details, so I can recognize the transaction at a glance on my phone.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Bank callback confirms Static VA payment received</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Mobile only</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">New — not yet live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Paper PayIn Transaction List</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Customer name (payer)</li>
+                <li>Payment amount</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, invoice number, payment date &amp; time, payment method, and transaction/reference ID are not shown in this notification.</p>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- C-3 -->
+        <div class="ticket" id="c3">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#fffbeb; color:#b45309;">C-3</span>
+            <span class="ticket-title">PayOut Success</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user paying my supplier, I want a push notification with the key PayOut details, so I can recognize the transaction at a glance on my phone.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">PayOut transaction successfully submitted/processed</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Mobile only</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">New — not yet live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Transaction payment receipt (that transaction)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>PayOut amount</li>
+                <li>Payment method</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, supplier name, invoice number, PayOut date &amp; time, and transaction/reference ID are not shown. PayOut type is tracked in the backend only, not shown in the push notification.</p>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+
+        <!-- C-4 -->
+        <div class="ticket" id="c4">
+          <div class="ticket-header" onclick="toggleTicket(this)">
+            <span class="ticket-id" style="background:#fffbeb; color:#b45309;">C-4</span>
+            <span class="ticket-title">PayOut Disbursement</span>
+            <span class="new-tag">New</span>
+            <span class="ticket-chevron">▾</span>
+          </div>
+          <div class="ticket-body">
+            <div class="user-story">
+              <strong>User story</strong>
+              <p>As a Paper.id user, I want a push notification once money has settled to my supplier's bank account, so I can recognize the disbursement at a glance on my phone.</p>
+            </div>
+            <div class="ticket-meta">
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Trigger</span><span class="ticket-meta-value">Disbursement/settlement confirmed to supplier's bank account</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Sub-types</span><span class="ticket-meta-value">Single PI · Single PYOR · Bulk PI · Bulk PYOR</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Platform</span><span class="ticket-meta-value">Mobile only</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">Status</span><span class="ticket-meta-value">New — not yet live</span></div>
+              <div class="ticket-meta-item"><span class="ticket-meta-label">On click</span><span class="ticket-meta-value">Transaction payment receipt (that transaction)</span></div>
+            </div>
+            <div class="ac-group">
+              <div class="ac-group-title">Required variables</div>
+              <ul class="ac-list">
+                <li>Supplier bank account name</li>
+                <li>Supplier bank account number (masked)</li>
+                <li>Supplier bank name</li>
+                <li>Disbursement amount</li>
+              </ul>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">User name, supplier name, invoice number, disbursement date &amp; time, and transaction/reference ID are not shown. Disbursement type is tracked in the backend only, not shown in the push notification.</p>
+            </div>
+            <div class="clickup-row">
+              <span>ClickUp URL</span>
+              <input class="clickup-input" type="text" placeholder="Paste ClickUp ticket URL…">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assets -->
+      <div class="section" id="assets">
+        <div class="section-header">
+          <div class="section-icon" style="background:#fafaf9;">📂</div>
+          <h2 class="section-title">Assets</h2>
+        </div>
+        <table class="assets-table">
+          <tr><th>Asset</th><th>Description</th><th>Status</th></tr>
+          <tr>
+            <td><a href="https://www.figma.com/design/ePMiwkTzv4iNDwbtH673VG/RnG---Payment-Notification?node-id=10-20621&p=f&t=qA8S3MxkJlda2ZsT-0" target="_blank" rel="noopener" style="color:var(--accent-text); font-weight:600; text-decoration:none;">Unified Payment Notification — Hi-Fi (Figma)</a></td>
+            <td style="color:var(--text-secondary);">Reference design for Email layout, and Bell/Push content per module</td>
+            <td><span class="status-chip status-draft">To be created</span></td>
+          </tr>
+          <tr>
+            <td><a href="https://docs.google.com/spreadsheets/d/1ayjzur9dlgQhL0TNEQLOT-eQoRxbLOlW/edit?pli=1&gid=1583958579#gid=1583958579" target="_blank" rel="noopener" style="color:var(--accent-text); font-weight:600; text-decoration:none;">WA &amp; Email Information Detail</a></td>
+            <td style="color:var(--text-secondary);">Reference sheet — WA remains disabled, no changes planned; email variable/behavior reference</td>
+            <td><span class="status-chip status-pending">Not in scope</span></td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleTicket(header) {
+    const ticket = header.closest('.ticket');
+    ticket.classList.toggle('open');
+  }
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('[id]');
+
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.getBoundingClientRect().top;
+      if (top <= 120) current = section.id;
+    });
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').replace('#', '');
+      link.classList.toggle('active', href === current);
+    });
+  }
+
+  document.querySelector('.main').addEventListener('scroll', updateActiveNav);
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+</script>
+
+</body>
+</html>
